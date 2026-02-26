@@ -29,6 +29,10 @@ public class Log implements Statement {
         return column;
     }
 
+    public void addExpression(Expression exp) {
+        this.expressions.add(exp);
+    }
+
     @Override
     public String toString() {
         return "log " + expressions + ";";

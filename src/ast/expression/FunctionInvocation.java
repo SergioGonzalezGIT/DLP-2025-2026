@@ -16,6 +16,10 @@ public class FunctionInvocation implements Expression {
         this.arguments = arguments;
     }
 
+    public void addArgument(Expression arg) {
+        this.arguments.add(arg);
+    }
+
     public Variable getVariable() {
         return variable;
     }

@@ -1,5 +1,8 @@
 package ast.type;
 
+import ast.definition.VarDefinition;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecordType implements Type {
@@ -10,6 +13,15 @@ public class RecordType implements Type {
     public RecordType(List<RecordField> fields, List<Type> types) {
         this.fields = fields;
         this.types = types;
+    }
+
+    public void addFields(List<VarDefinition> varDefs) {
+        for (VarDefinition vd : varDefs) {
+            RecordField field = new RecordField(vd.getName());
+
+            this.fields.add(field);
+            this.types.add(vd.getType());
+        }
     }
 
     public List<RecordField> getFields() {

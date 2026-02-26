@@ -2,20 +2,22 @@ package ast.statement;
 
 import ast.expression.Expression;
 
+import java.util.List;
+
 public class Input implements Statement {
 
     private int line;
     private int column;
-    private Expression expression;
+    private List<Expression> expressions;
 
-    public Input(int line, int column, Expression expression) {
+    public Input(int line, int column, List<Expression> expressions) {
         this.line = line;
         this.column = column;
-        this.expression = expression;
+        this.expressions = expressions;
     }
 
-    public Expression getExpression() {
-        return expression;
+    public List<Expression> getExpressions() {
+        return expressions;
     }
 
     @Override
@@ -28,8 +30,12 @@ public class Input implements Statement {
         return column;
     }
 
+    public void addExpression(Expression exp) {
+        this.expressions.add(exp);
+    }
+
     @Override
     public String toString() {
-        return "input " + expression + ";";
+        return "input " + expressions + ";";
     }
 }

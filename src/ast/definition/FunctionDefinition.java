@@ -23,6 +23,20 @@ public class FunctionDefinition implements Definition {
         this.statements = statements;
     }
 
+    public void addParameters(List<VarDefinition> params) {
+        this.parameters.addAll(params);
+    }
+
+    public void addLocalVariables(List<VarDefinition> locals) {
+        this.localVariables.addAll(locals);
+    }
+
+    public void addStatement(Statement st) {
+        this.statements.add(st);
+    }
+
+
+
     @Override
     public String getName() {
         return name;

@@ -2,6 +2,8 @@ package ast.statement;
 
 import ast.expression.Expression;
 import ast.expression.Variable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Invocation implements Statement {
@@ -34,6 +36,10 @@ public class Invocation implements Statement {
     @Override
     public int getColumn() {
         return column;
+    }
+
+    public void addArgument(Expression arg) {
+        this.arguments.add(arg);
     }
 
     @Override

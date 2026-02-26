@@ -9,10 +9,14 @@ public class Program implements ASTNode {
     private int column;
     private List<Definition> definitions;
 
-    public Program(int line, int column, List<Definition> definitions) {
-        this.line = line;
-        this.column = column;
+    public Program(List<Definition> definitions) {
+        //this.line = line;
+        //this.column = column;
         this.definitions = definitions;
+    }
+
+    public void addDefinitions(List<Definition> defs) {
+        this.definitions.addAll(defs);
     }
 
     public List<Definition> getDefinitions() {
