@@ -42,6 +42,12 @@ public class FunctionDefinition implements Definition {
 
     @Override
     public String toString() {
-        return "function " + name + " : " + type + " { ... }";
+        return "FunctionDefinition{" +
+                "line=" + line +
+                ", column=" + column +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", statements=" + statements +
+                '}';
     }
 }

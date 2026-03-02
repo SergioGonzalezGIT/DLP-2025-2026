@@ -1,8 +1,11 @@
-let a : int;
+function main() {
+    // Prueba de azúcar sintáctico en 'let'
+    let i, j, k: int;
 
-function main() : void {
-    a = 10;
+    i = 10;
+    j = 20;
+    k = i + j;
 
-    // Imprime la letra 'V', el número 10, y el resultado de 10+5
-    log 'V', a, a + 5;
+    // Prueba de azúcar sintáctico en 'log' (sin comillas)
+    log 'i', 'j', 'k';
 }

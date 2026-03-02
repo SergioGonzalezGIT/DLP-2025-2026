@@ -1,4 +1,4 @@
 package ast;
 
-public interface ASTNode extends Locatable{
+public interface ASTNode{
 }
