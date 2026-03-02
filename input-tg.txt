@@ -1,0 +1,8 @@
+let a : int;
+
+function main() : void {
+    a = 10;
+
+    // Imprime la letra 'V', el número 10, y el resultado de 10+5
+    log 'V', a, a + 5;
+}

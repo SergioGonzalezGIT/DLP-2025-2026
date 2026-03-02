@@ -29,7 +29,16 @@ import java.util.ArrayList;
 program returns [Program ast = null]
     :
       { $ast = new Program(new ArrayList<>()); }
-            ( d=definition { $ast.addDefinitions($d.ast); } )* EOF
+      ( d1=definition { $ast.addDefinitions($d1.ast); } )*
+
+      m=mainFunction
+      {
+          List<Definition> mainList = new ArrayList<>();
+          mainList.add($m.ast);
+          $ast.addDefinitions(mainList);
+      }
+
+      ( d2=definition { $ast.addDefinitions($d2.ast); } )* EOF
     ;
 
 
@@ -37,7 +46,6 @@ program returns [Program ast = null]
 definition returns [List<Definition> ast = new ArrayList<>()]
     : v=varDefinition { $ast.addAll($v.ast); }
     | f=functionDefinition { $ast.add($f.ast); }
-    | m=mainFunction { $ast.add($m.ast); }
     ;
 
 //TIENE QUE DEVOLVER UNA LISTA DE VARDEFINITIONS O DEFINITIONS,
@@ -51,22 +59,40 @@ varDefinition returns [List<VarDefinition> ast = new ArrayList<>()]
     ;
 
 functionDefinition returns [FunctionDefinition ast = null]
-    : OP='function' ID '('
-      { $ast = new FunctionDefinition($OP.getLine(), $OP.getCharPositionInLine() + 1, $ID.getText(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()); }
+    locals [ List<VarDefinition> paramsList = new ArrayList<>(), Type retType = VoidType.getInstance() ]
 
-      ( p=parameters { $ast.addParameters($p.ast); } )? ')' (':' returnType)?
+    : OP='function' ID '('
+      ( p=parameters { $paramsList = $p.ast; } )? ')'
+
+      (':' r=returnType { $retType = $r.ast; } )?
+
+      {
+          Type funcType = new FunctionType($paramsList, $retType);
+          $ast = new FunctionDefinition($OP.getLine(), $OP.getCharPositionInLine() + 1, $ID.getText(), funcType, new ArrayList<>());
+      }
       '{'
-          ( v=varDefinition { $ast.addLocalVariables($v.ast); } )*
+          ( v=varDefinition {
+              for(VarDefinition varDef : $v.ast) {
+                  $ast.addStatement(varDef);
+              }
+          } )*
+
           ( s=statement { $ast.addStatement($s.ast); } )*
       '}'
     ;
 
 mainFunction returns [FunctionDefinition ast = null]
     : OP='function' 'main' '(' ')' (':' 'void')?
-      { $ast = new FunctionDefinition($OP.getLine(), $OP.getCharPositionInLine() + 1, "main", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()); }
+      {
+          Type funcType = new FunctionType(new ArrayList<>(), VoidType.getInstance());
+          $ast = new FunctionDefinition($OP.getLine(), $OP.getCharPositionInLine() + 1, "main", funcType, new ArrayList<>());
+      }
       '{'
-          // 2. Le inyectamos variables locales y sentencias sobre la marcha
-          ( v=varDefinition { $ast.addLocalVariables($v.ast); } )*
+          ( v=varDefinition {
+              for(VarDefinition varDef : $v.ast) {
+                  $ast.addStatement(varDef);
+              }
+          } )*
           ( s=statement { $ast.addStatement($s.ast); } )*
       '}'
     ;
@@ -105,7 +131,7 @@ array returns [Type ast = null]
 
 struct returns [Type ast = null]
     : '['
-      { $ast = new RecordType(new ArrayList<>(), new ArrayList<>()); }
+      { $ast = new RecordType(new ArrayList<>()); }
 
       ( v=varDefinition { ((RecordType)$ast).addFields($v.ast); } )+
       ']'

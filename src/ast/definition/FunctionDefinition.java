@@ -2,6 +2,7 @@ package ast.definition;
 
 import ast.statement.Statement;
 import ast.type.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionDefinition implements Definition {
@@ -10,67 +11,37 @@ public class FunctionDefinition implements Definition {
     private int column;
     private String name;
 
-    private List<VarDefinition> parameters;
-    private List<VarDefinition> localVariables;
+    private Type type;
     private List<Statement> statements;
 
-    public FunctionDefinition(int line, int column, String name, List<VarDefinition> parameters, List<VarDefinition> localVariables, List<Statement> statements) {
+    public FunctionDefinition(int line, int column, String name, Type type, List<Statement> statements) {
         this.line = line;
         this.column = column;
         this.name = name;
-        this.parameters = parameters;
-        this.localVariables = localVariables;
+        this.type = type;
         this.statements = statements;
-    }
-
-    public void addParameters(List<VarDefinition> params) {
-        this.parameters.addAll(params);
-    }
-
-    public void addLocalVariables(List<VarDefinition> locals) {
-        this.localVariables.addAll(locals);
     }
 
     public void addStatement(Statement st) {
         this.statements.add(st);
     }
 
-
+    @Override
+    public String getName() { return name; }
 
     @Override
-    public String getName() {
-        return name;
-    }
+    public Type getType() { return type; }
+
+    public List<Statement> getStatements() { return statements; }
 
     @Override
-    public Type getType() {
-        return null;
-    }
-
-    public List<VarDefinition> getParameters() {
-        return parameters;
-    }
-
-    public List<VarDefinition> getLocalVariables() {
-        return localVariables;
-    }
-
-    public List<Statement> getStatements() {
-        return statements;
-    }
+    public int getLine() { return line; }
 
     @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
-    }
+    public int getColumn() { return column; }
 
     @Override
     public String toString() {
-        return "function " + name + " (" + parameters + ") { ... }";
+        return "function " + name + " : " + type + " { ... }";
     }
 }

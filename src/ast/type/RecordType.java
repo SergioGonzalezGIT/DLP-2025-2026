@@ -8,19 +8,15 @@ import java.util.List;
 public class RecordType implements Type {
 
     private List<RecordField> fields;
-    private List<Type> types;
 
-    public RecordType(List<RecordField> fields, List<Type> types) {
+    public RecordType(List<RecordField> fields) {
         this.fields = fields;
-        this.types = types;
     }
 
     public void addFields(List<VarDefinition> varDefs) {
         for (VarDefinition vd : varDefs) {
-            RecordField field = new RecordField(vd.getName());
-
+            RecordField field = new RecordField(vd.getName(), vd.getType());
             this.fields.add(field);
-            this.types.add(vd.getType());
         }
     }
 
@@ -28,15 +24,12 @@ public class RecordType implements Type {
         return fields;
     }
 
-    public List<Type> getTypes() {
-        return types;
-    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("record(");
         for (int i = 0; i < fields.size(); i++) {
-            sb.append(fields.get(i).getName()).append(":").append(types.get(i));
+            sb.append(fields.get(i).toString());
             if (i < fields.size() - 1) sb.append(", ");
         }
         sb.append(")");

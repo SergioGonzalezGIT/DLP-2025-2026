@@ -1,8 +1,9 @@
 package ast.definition;
 
+import ast.statement.Statement;
 import ast.type.Type;
 
-public class VarDefinition implements Definition {
+public class VarDefinition implements Definition, Statement {
 
     private int line;
     private int column;
