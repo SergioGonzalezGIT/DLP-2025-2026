@@ -15,7 +15,12 @@ public class RecordType implements Type {
 
     public void addFields(List<VarDefinition> varDefs) {
         for (VarDefinition vd : varDefs) {
-            RecordField field = new RecordField(vd.getName(), vd.getType());
+            for (RecordField existing : this.fields) {
+                if (existing.getName().equals(vd.getName())) {
+                    new ErrorType("DUPLICADO", vd);
+                }
+            }
+            RecordField field = new RecordField(vd.getLine(), vd.getColumn(), vd.getName(), vd.getType());
             this.fields.add(field);
         }
     }

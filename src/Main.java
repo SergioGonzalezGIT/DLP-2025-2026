@@ -1,5 +1,6 @@
 import ast.ASTNode;
 import ast.expression.Expression;
+import ast.type.ErrorHandler;
 import parser.*;
 
 import org.antlr.v4.runtime.*;
@@ -25,9 +26,17 @@ public class Main {
 		TSmmParser parser = new TSmmParser(tokens);
 		ASTNode ast = parser.program().ast;
 		//Expression ast = parser.expression().ast;
-		
-		// * The AST is shown
-		IntrospectorModel model=new IntrospectorModel("Program", ast);
-		new IntrospectorView("Introspector", model);
+
+		// * Check errors
+
+		if(ErrorHandler.getInstance().anyError()){
+			// * Show errors
+			ErrorHandler.getInstance().showErrors(System.err);
+		}
+		else{
+			// * The AST is shown
+			IntrospectorModel model=new IntrospectorModel("Program", ast);
+			new IntrospectorView("Introspector", model);
+		}
 	}
 }

@@ -1,14 +1,29 @@
 package ast.type;
 
-public class RecordField {
+import ast.Locatable;
+
+public class RecordField implements Locatable {
 
     private String name;
+    private Type type;
+    private int line;
+    private int column;
 
-    public Type type;
-
-    public RecordField(String name, Type type) {
+    public RecordField(int line, int column, String name, Type type) {
+        this.line = line;
+        this.column = column;
         this.name = name;
-        this.type=type;
+        this.type = type;
+    }
+
+    @Override
+    public int getLine() {
+        return line;
+    }
+
+    @Override
+    public int getColumn() {
+        return column;
     }
 
     public String getName() {
@@ -16,11 +31,11 @@ public class RecordField {
     }
 
     public Type getType() {
-        return type; // ¡Nuevo!
+        return type;
     }
 
     @Override
     public String toString() {
-        return name + ":" + type; // Ya se imprime él solito con su tipo
+        return name + ":" + type;
     }
 }
