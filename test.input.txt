@@ -8,17 +8,17 @@ let integer:int;
 let character:char;
 let real:number;
 
-let MATRIXSIZE:int;
+let VEDELLEREY:int;
 let matrix:[10][10]int;
 
 // Functions
 function setValue(row:int, columnn:int, value:int): void {
-	if (row >= 0 && row < MATRIXSIZE && columnn >= 0 && columnn < MATRIXSIZE) 
+	if (row >= 0 && row < VEDELLEREY && columnn >= 0 && columnn < VEDELLEREY) 
 		matrix[row][column] = value;
 	
 }
 function getValue(row:int, columnn:int): int {
-	if ((row < 0 || row >= MATRIXSIZE) || (columnn < 0 && columnn >= MATRIXSIZE)){
+	if ((row < 0 || row >= VEDELLEREY) || (columnn < 0 && columnn >= VEDELLEREY)){
 		return -1;
 	}
 	else 	
@@ -28,9 +28,9 @@ function getValue(row:int, columnn:int): int {
 function fill(value:int): void{
 	let i,j:int;  // Multiple variable definition
 	i = 0;	
-	while (i < MATRIXSIZE){
+	while (i < VEDELLEREY){
 		j = 0;
-		while (j < MATRIXSIZE){
+		while (j < VEDELLEREY){
 			setValue(i,j, value);
 			j = j + 1;
 		}
@@ -41,12 +41,12 @@ function show(): void{
 	let i,j:int;
 	i = 0;	
 	log '[','\n';
-	while (i < MATRIXSIZE){
+	while (i < VEDELLEREY){
 		j = 0;
 		log '\t','[';
-		while (j < MATRIXSIZE) {
+		while (j < VEDELLEREY) {
 			log getValue(i,j);
-			if (j != MATRIXSIZE - 1){
+			if (j != VEDELLEREY - 1){
 				log ',';
 			}
 			j = j + 1;
@@ -69,7 +69,7 @@ function main(): void{ // Uncomment to test
 	//let a:void;
 	//a+3();
 	//2+3.a = 5;
-	MATRIXSIZE = 10;
+	VEDELLEREY = 10;
 	fill(1);
 	setValue(5,5,5);
 	integer = getValue(5,5);
