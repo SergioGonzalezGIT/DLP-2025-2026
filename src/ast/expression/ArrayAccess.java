@@ -1,11 +1,14 @@
 package ast.expression;
 
+import ast.Visitor;
+
 public class ArrayAccess implements Expression {
 
     private int line;
     private int column;
     private Expression left;
     private Expression index;
+    private boolean lvalue;
 
     public ArrayAccess(int line, int column, Expression left, Expression index) {
         this.line = line;
@@ -35,5 +38,20 @@ public class ArrayAccess implements Expression {
     @Override
     public String toString() {
         return left + "[" + index + "]";
+    }
+
+    @Override
+    public boolean getLValue() {
+        return this.lvalue;
+    }
+
+    @Override
+    public void setLValue(boolean lvalue) {
+        this.lvalue = lvalue;
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

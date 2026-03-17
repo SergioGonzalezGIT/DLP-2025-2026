@@ -1,5 +1,6 @@
 package ast.statement;
 
+import ast.Visitor;
 import ast.expression.Expression;
 
 import java.util.ArrayList;
@@ -46,5 +47,10 @@ public class IfElse implements Statement {
     @Override
     public String toString() {
         return "if (" + condition + ") ...";
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

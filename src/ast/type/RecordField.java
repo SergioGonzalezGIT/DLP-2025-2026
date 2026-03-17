@@ -1,6 +1,7 @@
 package ast.type;
 
 import ast.Locatable;
+import ast.Visitor;
 
 public class RecordField implements Locatable {
 
@@ -37,5 +38,10 @@ public class RecordField implements Locatable {
     @Override
     public String toString() {
         return name + ":" + type;
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

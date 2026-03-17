@@ -1,5 +1,6 @@
 package ast.statement;
 
+import ast.Visitor;
 import ast.expression.Expression;
 import java.util.List;
 
@@ -36,5 +37,10 @@ public class Log implements Statement {
     @Override
     public String toString() {
         return "log " + expressions + ";";
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

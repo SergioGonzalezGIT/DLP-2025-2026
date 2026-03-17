@@ -1,5 +1,6 @@
 package ast.type;
 
+import ast.Visitor;
 import ast.definition.VarDefinition;
 import java.util.List;
 
@@ -24,5 +25,10 @@ public class FunctionType implements Type {
     @Override
     public String toString() {
         return "function type";
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

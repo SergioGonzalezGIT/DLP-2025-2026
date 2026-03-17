@@ -1,5 +1,6 @@
 package ast.statement;
 
+import ast.Visitor;
 import ast.expression.Expression;
 import ast.expression.Variable;
 
@@ -45,5 +46,10 @@ public class Invocation implements Statement {
     @Override
     public String toString() {
         return variable + "(" + arguments + ");";
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

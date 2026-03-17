@@ -1,5 +1,6 @@
 package ast.definition;
 
+import ast.Visitor;
 import ast.statement.Statement;
 import ast.type.Type;
 
@@ -40,5 +41,10 @@ public class VarDefinition implements Definition, Statement {
     @Override
     public String toString() {
         return "let " + name + " : " + type + ";";
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }

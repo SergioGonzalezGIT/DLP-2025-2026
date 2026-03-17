@@ -1,6 +1,7 @@
 package ast.type;
 
 import ast.Locatable;
+import ast.Visitor;
 
 public class ErrorType implements Type {
 
@@ -22,6 +23,11 @@ public class ErrorType implements Type {
                 ", linea=" + linea +
                 ", columna=" + columna +
                 '}';
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 
 }

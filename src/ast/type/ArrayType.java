@@ -1,5 +1,7 @@
 package ast.type;
 
+import ast.Visitor;
+
 public class ArrayType implements Type {
 
     private int dimension;
@@ -22,4 +24,10 @@ public class ArrayType implements Type {
     public String toString() {
         return "[" + dimension + "]" + of.toString();
     }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
+    }
+
 }

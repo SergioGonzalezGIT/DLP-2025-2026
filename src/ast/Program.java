@@ -23,4 +23,9 @@ public class Program implements ASTNode {
     public String toString() {
         return "Program with " + definitions.size() + " definitions.";
     }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
+    }
 }

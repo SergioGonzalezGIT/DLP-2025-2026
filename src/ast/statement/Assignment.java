@@ -1,5 +1,6 @@
 package ast.statement;
 
+import ast.Visitor;
 import ast.expression.Expression;
 
 public class Assignment implements Statement {
@@ -37,5 +38,10 @@ public class Assignment implements Statement {
     @Override
     public String toString() {
         return left + " = " + right + ";";
+    }
+
+    @Override
+    public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
+        return visitor.visit(this, param);
     }
 }
