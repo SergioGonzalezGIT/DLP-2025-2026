@@ -16,13 +16,19 @@ public class RecordType implements Type {
 
     public void addFields(List<VarDefinition> varDefs) {
         for (VarDefinition vd : varDefs) {
+            boolean isDuplicate = false;
+
             for (RecordField existing : this.fields) {
                 if (existing.getName().equals(vd.getName())) {
-                    new ErrorType("DUPLICADO", vd);
+                    new ErrorType("Campo duplicado en struct/record: " + vd.getName(), vd);
+                    isDuplicate = true;
+                    break;
                 }
             }
-            RecordField field = new RecordField(vd.getLine(), vd.getColumn(), vd.getName(), vd.getType());
-            this.fields.add(field);
+            if (!isDuplicate) {
+                RecordField field = new RecordField(vd.getLine(), vd.getColumn(), vd.getName(), vd.getType());
+                this.fields.add(field);
+            }
         }
     }
 

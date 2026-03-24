@@ -15,6 +15,8 @@ public class FunctionDefinition implements Definition {
     private Type type;
     private List<Statement> statements;
 
+    private int scope;
+
     public FunctionDefinition(int line, int column, String name, Type type, List<Statement> statements) {
         this.line = line;
         this.column = column;
@@ -32,6 +34,16 @@ public class FunctionDefinition implements Definition {
 
     @Override
     public Type getType() { return type; }
+
+    @Override
+    public int getScope() {
+        return scope;
+    }
+
+    @Override
+    public void setScope(int scope) {
+        this.scope=scope;
+    }
 
     public List<Statement> getStatements() { return statements; }
 

@@ -9,10 +9,7 @@ import ast.type.*;
 
 public class LValueVisitor implements Visitor<Void,Void> {
 
-    // ==========================================
     // 1. EXPRESIONES QUE SÍ SON L-VALUE (true)
-    // ==========================================
-
     @Override
     public Void visit(Variable variable, Void param) {
         variable.setLValue(true);
@@ -35,10 +32,7 @@ public class LValueVisitor implements Visitor<Void,Void> {
     }
 
 
-    // ==========================================
     // 2. EXPRESIONES QUE NO SON L-VALUE (false)
-    // ==========================================
-
     @Override
     public Void visit(Arithmetic arithmetic, Void param) {
         arithmetic.getLeft().accept(this, param);
@@ -95,7 +89,6 @@ public class LValueVisitor implements Visitor<Void,Void> {
     }
 
     // --- Literales (Nunca son L-Values) ---
-
     @Override
     public Void visit(IntLiteral intLiteral, Void param) {
         intLiteral.setLValue(false);
@@ -115,16 +108,12 @@ public class LValueVisitor implements Visitor<Void,Void> {
     }
 
 
-    // ==========================================
     // 3. SENTENCIAS (Validadores y Propagadores)
-    // ==========================================
-
     @Override
     public Void visit(Assignment assignment, Void param) {
         assignment.getLeft().accept(this, param);
         assignment.getRight().accept(this, param);
 
-        // COMPROBACIÓN CRÍTICA: La izquierda debe ser L-Value
         if (!assignment.getLeft().getLValue()) {
             System.err.println("Error LValue [Línea " + assignment.getLine() + "]: El lado izquierdo de la asignación no es una dirección de memoria válida.");
         }
@@ -133,7 +122,7 @@ public class LValueVisitor implements Visitor<Void,Void> {
 
     @Override
     public Void visit(Input input, Void param) {
-        // COMPROBACIÓN CRÍTICA: No puedes hacer 'input 5;', tiene que ser una variable 'input a;'
+        //No puedes ser 'input 5;', tiene que ser una variable 'input a;'
         for (Expression e : input.getExpressions()) {
             e.accept(this, param);
             if (!e.getLValue()) {
@@ -189,10 +178,7 @@ public class LValueVisitor implements Visitor<Void,Void> {
     }
 
 
-    // ==========================================
     // 4. NODOS ESTRUCTURALES Y TIPOS
-    // ==========================================
-
     @Override
     public Void visit(Program program, Void param) {
         for (Definition def : program.getDefinitions()) {
@@ -215,8 +201,6 @@ public class LValueVisitor implements Visitor<Void,Void> {
         // Las definiciones no alteran el LValue, pero las visitamos por si acaso
         return null;
     }
-
-    // --- Tipos (Los ignoramos en esta fase, no tienen expresiones dentro que afecten al LValue) ---
 
     @Override public Void visit(ArrayType arrayType, Void param) { return null; }
     @Override public Void visit(CharType charType, Void param) { return null; }

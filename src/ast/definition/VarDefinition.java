@@ -11,6 +11,8 @@ public class VarDefinition implements Definition, Statement {
     private String name;
     private Type type;
 
+    private int scope;
+
     public VarDefinition(int line, int column, String name, Type type) {
         this.line = line;
         this.column = column;
@@ -26,6 +28,16 @@ public class VarDefinition implements Definition, Statement {
     @Override
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public int getScope() {
+        return scope;
+    }
+
+    @Override
+    public void setScope(int scope) {
+        this.scope=scope;
     }
 
     @Override
