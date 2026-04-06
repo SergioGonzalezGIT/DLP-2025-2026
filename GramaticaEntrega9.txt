@@ -1,0 +1,28 @@
+A: expression.type = Type
+
+G:
+(1) IntLiteral: expression -> INT_CONSTANT
+(2) Variable  : expression -> ID
+(3) If        : statement1 -> expression statement2* statement3*
+(4) Arithmetic: expression1 -> expression2 (+|-|*|/) expression3
+(5) Assignment: expression1 -> expression2 expression3
+(6) Indexing: expression1 -> expression2 expression3
+(7) FieldAccess: expression1 -> expression2 ID
+(8) FunctionInvocation: expression1 -> expression2 expression3*
+(9) Return: statement -> expression        
+(10) FuncDefinition: definition -> type ID vardefinition* statement*
+
+
+
+
+R:
+(1) expression.type = IntType.getInstance
+(2) expression.type = expression.definition.type
+(3) statement1.expression.type.mustBeLogical(statement1)
+(4) expression1.type = expression2.type.arithmetic(expression3.type, expression1)
+(5) expression2.type.mustPromoteTo(expression1.type, statement)
+(6) expression1.type = expression2.type.squareBrackets(expression3.type, expression1)
+(7) expression1.type = expression2.type.dot(ID.name, expression1)
+(8) expression1.type = expression2.type.parenthesis(expression3*.type, expression1)
+(9) expression.type.mustPromoteTo(statement.returnType, statement)
+(10)foreach s in statement*: s.returnType = type

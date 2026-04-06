@@ -2,7 +2,7 @@ package ast.expression;
 
 import ast.Visitor;
 
-public class FieldAccess implements Expression {
+public class FieldAccess extends AbstractExpression {
 
     private int line;
     private int column;

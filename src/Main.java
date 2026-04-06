@@ -1,13 +1,11 @@
-import ast.IdentificationVisitor;
-import ast.LValueVisitor;
+import ast.*;
+import ast.type.Type;
 import org.antlr.v4.runtime.*;
 import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorView;
-import ast.ASTNode;
 import ast.type.ErrorHandler;
 import parser.TSmmLexer;
 import parser.TSmmParser;
-import ast.Visitor;
 
 public class Main {
 
@@ -27,10 +25,20 @@ public class Main {
 		ASTNode ast = parser.program().ast;
 
 
-		//Visitor<Void,Void> lValueVisitor = new LValueVisitor(); //TODO: instanciate a new LValueVisitor
-		//ast.accept(lValueVisitor, null);
+
 		Visitor<Void,Void> identificationVisitor = new IdentificationVisitor();
 		ast.accept(identificationVisitor, null);
+
+
+		Visitor<Void,Void> lValueVisitor = new LValueVisitor(); //TODO: instanciate a new LValueVisitor
+		ast.accept(lValueVisitor, null);
+
+
+
+		Visitor<Type,Boolean> TypeCheckingVisitor = new TypeCheckingVisitor();
+		ast.accept(TypeCheckingVisitor, null);
+
+
 
 
 

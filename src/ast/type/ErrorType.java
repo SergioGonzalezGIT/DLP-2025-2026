@@ -3,6 +3,8 @@ package ast.type;
 import ast.Locatable;
 import ast.Visitor;
 
+import java.util.List;
+
 public class ErrorType implements Type {
 
     private String message;
@@ -30,4 +32,58 @@ public class ErrorType implements Type {
         return visitor.visit(this, param);
     }
 
+    @Override
+    public void mustBeLogical(Locatable locatable) {
+
+    }
+
+    @Override
+    public void mustBeBuiltIn(Locatable locatable) {
+
+    }
+
+    @Override
+    public void mustPromoteTo(Type other, Locatable locatable) {
+
+    }
+
+    @Override
+    public Type arithmetic(Type other, Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type comparison(Type other, Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type logical(Type other, Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type unaryMinus(Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type unaryNot(Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type squareBrackets(Type indexType, Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type dot(String field, Locatable locatable) {
+        return this;
+    }
+
+    @Override
+    public Type parenthesis(List<Type> args, Locatable locatable) {
+        return this;
+    }
 }

@@ -1,6 +1,6 @@
 package ast.expression;
 
-public abstract class AbstractOperation implements Expression {
+public abstract class AbstractOperation extends AbstractExpression {
 
     private int line;
     private int column;

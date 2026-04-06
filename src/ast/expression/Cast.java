@@ -3,7 +3,7 @@ package ast.expression;
 import ast.Visitor;
 import ast.type.Type;
 
-public class Cast implements Expression {
+public class Cast extends AbstractExpression {
 
     private int line;
     private int column;

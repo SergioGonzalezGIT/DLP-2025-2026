@@ -4,7 +4,7 @@ import ast.Visitor;
 
 import java.util.List;
 
-public class FunctionInvocation implements Expression {
+public class FunctionInvocation extends AbstractExpression {
 
     private int line;
     private int column;

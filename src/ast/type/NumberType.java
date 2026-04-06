@@ -1,8 +1,9 @@
 package ast.type;
 
+import ast.Locatable;
 import ast.Visitor;
 
-public class NumberType implements Type {
+public class NumberType extends  AbstractType {
 
     private static NumberType instance = new NumberType();
 
@@ -20,5 +21,44 @@ public class NumberType implements Type {
     @Override
     public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
         return visitor.visit(this, param);
+    }
+
+    @Override
+    public void mustBeBuiltIn(Locatable locatable) {
+    }
+
+    @Override
+    public void mustPromoteTo(Type other, Locatable locatable) {
+        if (other instanceof NumberType || other instanceof ErrorType) {
+            return;
+        }
+        new ErrorType("El tipo " + this.toString() + " no es compatible con el tipo " + other.toString(), locatable);
+    }
+
+    @Override
+    public Type arithmetic(Type other, Locatable locatable) {
+        if (other instanceof NumberType) {
+            return this;
+        }
+
+        if (other instanceof ErrorType) return other;
+
+        return super.arithmetic(other, locatable);
+    }
+
+    @Override
+    public Type comparison(Type other, Locatable locatable) {
+        if (other instanceof NumberType) {
+            return IntType.getInstance();
+        }
+
+        if (other instanceof ErrorType) return other;
+
+        return super.comparison(other, locatable);
+    }
+
+    @Override
+    public Type unaryMinus(Locatable locatable) {
+        return this;
     }
 }

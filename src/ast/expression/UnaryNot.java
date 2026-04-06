@@ -2,7 +2,7 @@ package ast.expression;
 
 import ast.Visitor;
 
-public class UnaryNot implements Expression {
+public class UnaryNot extends AbstractExpression {
 
     private int line;
     private int column;

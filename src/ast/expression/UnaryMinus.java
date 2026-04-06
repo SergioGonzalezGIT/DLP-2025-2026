@@ -2,7 +2,7 @@ package ast.expression;
 
 import ast.Visitor;
 
-public class UnaryMinus implements Expression {
+public class UnaryMinus extends AbstractExpression {
 
     private int line;
     private int column;

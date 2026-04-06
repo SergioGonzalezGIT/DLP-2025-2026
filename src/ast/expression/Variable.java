@@ -3,7 +3,7 @@ package ast.expression;
 import ast.Visitor;
 import ast.definition.Definition;
 
-public class Variable implements Expression {
+public class Variable extends AbstractExpression {
 
     private int line;
     private int column;
