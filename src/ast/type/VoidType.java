@@ -31,4 +31,9 @@ public class VoidType extends  AbstractType {
 
         new ErrorType("El tipo " + this.toString() + " no es compatible con el tipo " + other.toString(), locatable);
     }
+
+    @Override
+    public int numberOfBytes() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -1,3 +1,11 @@
-Implementar la pasada de comprobación de tipos de la fase de análisis semántico.
-Decorar el AST con la información de tipos.
-Detectar los errores de los 5 programas de prueba.
+Generar el codigo MAPL para
+- Programs
+- Input statements
+- Print statements
+- Literals
+- Variables
+- Assignments
+- Arithmetic, comparison and logical expressions
+- VarDefinitions (global / local)
+- FunDefinitions
+- Casts

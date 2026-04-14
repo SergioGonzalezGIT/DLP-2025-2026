@@ -13,6 +13,8 @@ public class VarDefinition implements Definition, Statement {
 
     private int scope;
 
+    private int offset;
+
     public VarDefinition(int line, int column, String name, Type type) {
         this.line = line;
         this.column = column;
@@ -58,5 +60,13 @@ public class VarDefinition implements Definition, Statement {
     @Override
     public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {
         return visitor.visit(this, param);
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return this.offset;
     }
 }

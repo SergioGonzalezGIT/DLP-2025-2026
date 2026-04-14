@@ -53,4 +53,10 @@ public class ArrayType extends  AbstractType {
         return new ErrorType("El índice de acceso a un array debe ser entero, pero se encontró " + indexType.toString(), locatable);
     }
 
+    @Override
+    public int numberOfBytes() {
+        return this.dimension * this.of.numberOfBytes();
+    }
+
+
 }

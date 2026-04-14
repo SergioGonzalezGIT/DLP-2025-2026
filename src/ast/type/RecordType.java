@@ -88,4 +88,13 @@ public class RecordType extends  AbstractType {
 
         return new ErrorType("El campo '" + fieldName + "' no está definido en el record.", locatable);
     }
+
+    @Override
+    public int numberOfBytes() {
+        int total = 0;
+        for (RecordField field : fields) {
+            total += field.getType().numberOfBytes();
+        }
+        return total;
+    }
 }

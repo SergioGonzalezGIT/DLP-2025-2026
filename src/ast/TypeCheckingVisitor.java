@@ -1,6 +1,5 @@
 package ast;
 
-
 import ast.definition.Definition;
 import ast.definition.FunctionDefinition;
 import ast.expression.*;
@@ -10,37 +9,59 @@ import ast.type.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
+public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
 
     @Override
-    public Boolean visit(IntLiteral intLiteral, Type param) {
+    public Void visit(IntLiteral intLiteral, Type param) {
         intLiteral.setType(IntType.getInstance());
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(CharLiteral charLiteral, Type param) {
+    public Void visit(CharLiteral charLiteral, Type param) {
         charLiteral.setType(CharType.getInstance());
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(NumberLiteral numberLiteral, Type param) {
+    public Void visit(NumberLiteral numberLiteral, Type param) {
         numberLiteral.setType(NumberType.getInstance());
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(Variable variable, Type param) {
+    public Void visit(Variable variable, Type param) {
         Type type = variable.getDefinition().getType();
         variable.setType(type);
         if (param != null) variable.getType().mustPromoteTo(param, variable);
-        return true;
+        return null;
     }
 
+    // En TypeCheckingVisitor.java
+    @Override
+    public Void visit(Cast cast, Type param) {
+        // 1. Inferimos el tipo de la expresión interna
+        cast.getExpression().accept(this, null);
+
+        // 2. Comprobamos si el tipo original admite el casteo al tipo destino
+        Type originalType = cast.getExpression().getType();
+        Type targetType = cast.getCastType();
+
+        Type resultType = originalType.canBeCastTo(targetType, cast);
+
+        // 3. Le asignamos al nodo Cast el tipo resultante (que será targetType o ErrorType)
+        cast.setType(resultType);
+
+        // 4. Propagación de tipos hacia arriba (si es necesario)
+        if (param != null) {
+            cast.getType().mustPromoteTo(param, cast);
+        }
+
+        return null;
+    }
 
     @Override
-    public Boolean visit(Arithmetic arithmetic, Type param) {
+    public Void visit(Arithmetic arithmetic, Type param) {
         arithmetic.getLeft().accept(this, null);
         arithmetic.getRight().accept(this, null);
 
@@ -51,11 +72,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         arithmetic.setType(resultado);
 
         if (param != null) arithmetic.getType().mustPromoteTo(param, arithmetic);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(Comparison comparison, Type param) {
+    public Void visit(Comparison comparison, Type param) {
         comparison.getLeft().accept(this, null);
         comparison.getRight().accept(this, null);
 
@@ -66,11 +87,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         comparison.setType(resultado);
 
         if (param != null) comparison.getType().mustPromoteTo(param, comparison);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(Logical logical, Type param) {
+    public Void visit(Logical logical, Type param) {
         logical.getLeft().accept(this, null);
         logical.getRight().accept(this, null);
 
@@ -81,11 +102,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         logical.setType(resultado);
 
         if (param != null) logical.getType().mustPromoteTo(param, logical);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(UnaryMinus unaryMinus, Type param) {
+    public Void visit(UnaryMinus unaryMinus, Type param) {
         unaryMinus.getExpression().accept(this, null);
 
         Type tipo = unaryMinus.getExpression().getType();
@@ -94,11 +115,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         unaryMinus.setType(resultado);
 
         if (param != null) unaryMinus.getType().mustPromoteTo(param, unaryMinus);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(UnaryNot unaryNot, Type param) {
+    public Void visit(UnaryNot unaryNot, Type param) {
         unaryNot.getExpression().accept(this, null);
 
         Type tipo = unaryNot.getExpression().getType();
@@ -107,11 +128,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         unaryNot.setType(resultado);
 
         if (param != null) unaryNot.getType().mustPromoteTo(param, unaryNot);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(ArrayAccess arrayAccess, Type param) {
+    public Void visit(ArrayAccess arrayAccess, Type param) {
         arrayAccess.getLeft().accept(this, null);
         arrayAccess.getIndex().accept(this, null);
 
@@ -122,11 +143,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         arrayAccess.setType(resultado);
 
         if (param != null) arrayAccess.getType().mustPromoteTo(param, arrayAccess);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(FieldAccess fieldAccess, Type param) {
+    public Void visit(FieldAccess fieldAccess, Type param) {
         fieldAccess.getExpression().accept(this, null);
 
         Type tipoExpr = fieldAccess.getExpression().getType();
@@ -135,30 +156,29 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
         fieldAccess.setType(resultado);
 
         if (param != null) fieldAccess.getType().mustPromoteTo(param, fieldAccess);
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(FunctionInvocation invocation, Type param) {
-        invocation.getVariable().accept(this, null);
+    public Void visit(FunctionInvocation inv, Type param) {
+        inv.getVariable().accept(this, null);
 
-        List<Type> argumentTypes = new ArrayList<>();
-        for (Expression arg : invocation.getArguments()) {
+        List<Type> argTypes = new ArrayList<>();
+        for (Expression arg : inv.getArguments()) {
             arg.accept(this, null);
-            argumentTypes.add(arg.getType());
+            argTypes.add(arg.getType());
         }
 
-        Type tipoFuncion = invocation.getVariable().getType();
-        Type resultado = tipoFuncion.parenthesis(argumentTypes, invocation);
+        Type resultType = inv.getVariable().getType().parenthesis(argTypes, inv);
 
-        invocation.setType(resultado);
+        inv.setType(resultType);
 
-        if (param != null) invocation.getType().mustPromoteTo(param, invocation);
-        return true;
+
+        return null;
     }
 
     @Override
-    public Boolean visit(Assignment assignment, Type param) {
+    public Void visit(Assignment assignment, Type param) {
         assignment.getLeft().accept(this, null);
         assignment.getRight().accept(this, null);
 
@@ -171,11 +191,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
 
         tipoDer.mustPromoteTo(tipoIzq, assignment);
 
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(IfElse ifElse, Type param) {
+    public Void visit(IfElse ifElse, Type param) {
         ifElse.getCondition().accept(this, null);
 
         ifElse.getCondition().getType().mustBeLogical(ifElse.getCondition());
@@ -187,11 +207,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
             s.accept(this, param);
         }
 
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(While whileStmt, Type param) {
+    public Void visit(While whileStmt, Type param) {
         whileStmt.getCondition().accept(this, null);
 
         whileStmt.getCondition().getType().mustBeLogical(whileStmt.getCondition());
@@ -200,28 +220,29 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
             s.accept(this, param);
         }
 
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(Input input, Type param) {
+    public Void visit(Input input, Type param) {
         for (Expression expr : input.getExpressions()) {
             expr.accept(this, null);
             expr.getType().mustBeBuiltIn(expr);
         }
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(Log log, Type param) {
+    public Void visit(Log log, Type param) {
         for (Expression expr : log.getExpressions()) {
             expr.accept(this, null);
             expr.getType().mustBeBuiltIn(expr);
         }
-        return true;
+        return null;
     }
+
     @Override
-    public Boolean visit(Return returnStmt, Type param) {
+    public Void visit(Return returnStmt, Type param) {
         if (returnStmt.getExpression() != null) {
             returnStmt.getExpression().accept(this, null);
             Type tipoRetorno = returnStmt.getExpression().getType();
@@ -234,11 +255,11 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
                 VoidType.getInstance().mustPromoteTo(param, returnStmt);
             }
         }
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(FunctionDefinition funcDef, Type param) {
+    public Void visit(FunctionDefinition funcDef, Type param) {
         funcDef.getType().accept(this, null);
 
         Type returnType = ((FunctionType) funcDef.getType()).getReturnType();
@@ -247,17 +268,28 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Boolean> {
             s.accept(this, returnType);
         }
 
-        return true;
+        return null;
     }
 
     @Override
-    public Boolean visit(Program program, Type param) {
+    public Void visit(Program program, Type param) {
         for (Definition def : program.getDefinitions()) {
             def.accept(this, null);
         }
-        return true;
+        return null;
+    }
+
+    @Override
+    public Void visit(Invocation invocation, Type param) {
+        invocation.getVariable().accept(this, null);
+
+        List<Type> argTypes = new ArrayList<>();
+        for (Expression arg : invocation.getArguments()) {
+            arg.accept(this, null);
+            argTypes.add(arg.getType());
+        }
+
+        invocation.getVariable().getType().parenthesis(argTypes, invocation);
+        return null;
     }
 }
-
-
-

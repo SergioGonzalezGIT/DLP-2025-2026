@@ -71,6 +71,15 @@ public class CharType extends  AbstractType{
     }
 
     @Override
+    public Type canBeCastTo(Type type, Locatable locatable) {
+        if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
+            return type; // Casting válido, devolvemos el tipo destino
+        }
+        // Si intentan castear a un Array o un Record, que salte el error por defecto
+        return super.canBeCastTo(type, locatable);
+    }
+
+    @Override
     public Type unaryMinus(Locatable locatable) {
         return this;
     }
@@ -79,4 +88,11 @@ public class CharType extends  AbstractType{
     public Type unaryNot(Locatable locatable) {
         return this;
     }
+
+    @Override
+    public int numberOfBytes() {
+        return 1;
+    }
+
+
 }

@@ -48,6 +48,11 @@ public class ErrorType implements Type {
     }
 
     @Override
+    public Type canBeCastTo(Type type, Locatable locatable) {
+        return this;
+    }
+
+    @Override
     public Type arithmetic(Type other, Locatable locatable) {
         return this;
     }
@@ -85,5 +90,10 @@ public class ErrorType implements Type {
     @Override
     public Type parenthesis(List<Type> args, Locatable locatable) {
         return this;
+    }
+
+    @Override
+    public int numberOfBytes() {
+        throw new UnsupportedOperationException();
     }
 }

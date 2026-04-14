@@ -80,4 +80,20 @@ public class IntType extends  AbstractType{
     public Type unaryNot(Locatable locatable) {
         return this;
     }
+
+    @Override
+    public Type canBeCastTo(Type type, Locatable locatable) {
+        if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
+            return type; // Casting válido, devolvemos el tipo destino
+        }
+        // Si intentan castear a un Array o un Record, que salte el error por defecto
+        return super.canBeCastTo(type, locatable);
+    }
+
+    @Override
+    public int numberOfBytes() {
+        return 2;
+    }
+
+
 }

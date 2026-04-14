@@ -60,4 +60,15 @@ public abstract class AbstractType implements Type {
     public Type parenthesis(List<Type> args, Locatable locatable) {
         return new ErrorType("El tipo " + this.getClass().getSimpleName() + " no es una función y no puede ser invocado con ().", locatable);
     }
+
+    @Override
+    public Type canBeCastTo(Type type, Locatable locatable) {
+        if (type instanceof ErrorType) {
+            return type; // Si ya hay un error, lo propagamos
+        }
+        return new ErrorType("No se puede convertir explícitamente el tipo " +
+                this.toString() + " al tipo " + type.toString(), locatable);
+    }
+
+
 }

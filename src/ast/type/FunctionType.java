@@ -57,4 +57,9 @@ public class FunctionType extends  AbstractType {
 
         return returnType;
     }
+
+    @Override
+    public int numberOfBytes() {
+        throw new UnsupportedOperationException();
+    }
 }
