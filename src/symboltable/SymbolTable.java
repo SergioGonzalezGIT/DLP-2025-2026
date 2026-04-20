@@ -34,9 +34,9 @@ public class SymbolTable {
 		}
 		return false;
 	}
-	
+
 	public Definition find(String id) {
-		for(int i=0; i<table.size();i++){
+		for(int i = table.size() - 1; i >= 0; i--){
 			if (table.get(i).containsKey(id)) {
 				return table.get(i).get(id);
 			}
@@ -44,7 +44,6 @@ public class SymbolTable {
 		return null;
 	}
 
-	//package-protected for testing pourposes
 	boolean findInCurrentScope(String id) {
 		Map<String, Definition> ambitoActual = table.getLast();
 		if(ambitoActual.containsKey(id)){

@@ -64,11 +64,17 @@ public abstract class AbstractType implements Type {
     @Override
     public Type canBeCastTo(Type type, Locatable locatable) {
         if (type instanceof ErrorType) {
-            return type; // Si ya hay un error, lo propagamos
+            return type;
         }
         return new ErrorType("No se puede convertir explícitamente el tipo " +
                 this.toString() + " al tipo " + type.toString(), locatable);
     }
+
+    @Override
+    public char suffix(){
+        throw new UnsupportedOperationException();
+    }
+
 
 
 }

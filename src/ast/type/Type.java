@@ -26,7 +26,7 @@ public interface Type extends ASTNode {
 
 
 
-
+    char suffix();
     int numberOfBytes();
 
 }

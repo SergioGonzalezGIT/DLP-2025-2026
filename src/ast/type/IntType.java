@@ -45,6 +45,12 @@ public class IntType extends  AbstractType{
         if (other instanceof IntType) {
             return this;
         }
+        if (other instanceof CharType){
+            return IntType.getInstance();
+        }
+        if (other instanceof NumberType){
+            return NumberType.getInstance();
+        }
         if (other instanceof ErrorType) {
             return other;
         }
@@ -84,15 +90,19 @@ public class IntType extends  AbstractType{
     @Override
     public Type canBeCastTo(Type type, Locatable locatable) {
         if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
-            return type; // Casting válido, devolvemos el tipo destino
+            return type;
         }
-        // Si intentan castear a un Array o un Record, que salte el error por defecto
         return super.canBeCastTo(type, locatable);
     }
 
     @Override
     public int numberOfBytes() {
         return 2;
+    }
+
+    @Override
+    public char suffix(){
+        return 'i';
     }
 
 

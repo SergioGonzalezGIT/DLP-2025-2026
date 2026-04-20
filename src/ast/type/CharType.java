@@ -42,13 +42,21 @@ public class CharType extends  AbstractType{
     @Override
     public Type arithmetic(Type other, Locatable locatable) {
         if (other instanceof CharType) {
-            return this;
+            return IntType.getInstance();
+        }
+        if (other instanceof IntType) {
+            return IntType.getInstance();
+        }
+        if (other instanceof NumberType) {
+            return NumberType.getInstance();
         }
         if (other instanceof ErrorType) {
             return other;
         }
         return super.arithmetic(other, locatable);
     }
+
+
 
     @Override
     public Type comparison(Type other, Locatable locatable) {
@@ -73,9 +81,8 @@ public class CharType extends  AbstractType{
     @Override
     public Type canBeCastTo(Type type, Locatable locatable) {
         if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
-            return type; // Casting válido, devolvemos el tipo destino
+            return type;
         }
-        // Si intentan castear a un Array o un Record, que salte el error por defecto
         return super.canBeCastTo(type, locatable);
     }
 
@@ -92,6 +99,11 @@ public class CharType extends  AbstractType{
     @Override
     public int numberOfBytes() {
         return 1;
+    }
+
+    @Override
+    public char suffix(){
+        return 'b';
     }
 
 

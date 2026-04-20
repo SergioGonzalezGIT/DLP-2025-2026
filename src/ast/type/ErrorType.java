@@ -5,7 +5,7 @@ import ast.Visitor;
 
 import java.util.List;
 
-public class ErrorType implements Type {
+public class ErrorType extends AbstractType {
 
     private String message;
     private int linea;

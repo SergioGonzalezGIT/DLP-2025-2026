@@ -15,7 +15,7 @@ public class NumberType extends  AbstractType {
 
     @Override
     public String toString() {
-        return "number";
+        return "real";
     }
 
     @Override
@@ -37,8 +37,10 @@ public class NumberType extends  AbstractType {
 
     @Override
     public Type arithmetic(Type other, Locatable locatable) {
-        if (other instanceof NumberType) {
-            return this;
+
+
+        if (other instanceof NumberType || other instanceof IntType || other instanceof CharType) {
+            return NumberType.getInstance();
         }
 
         if (other instanceof ErrorType) return other;
@@ -60,9 +62,8 @@ public class NumberType extends  AbstractType {
     @Override
     public Type canBeCastTo(Type type, Locatable locatable) {
         if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
-            return type; // Casting válido, devolvemos el tipo destino
+            return type;
         }
-        // Si intentan castear a un Array o un Record, que salte el error por defecto
         return super.canBeCastTo(type, locatable);
     }
 
@@ -74,6 +75,12 @@ public class NumberType extends  AbstractType {
     @Override
     public int numberOfBytes() {
         return 4;
+    }
+
+
+    @Override
+    public char suffix(){
+        return 'f';
     }
 
 

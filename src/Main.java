@@ -1,15 +1,11 @@
 
-import codegen.CodeGenerator;
-import codegen.ExecuteCGVisitor;
-import codegen.OffsetVisitor;
+
+import ast.*;
+import ast.type.ErrorHandler;
 import org.antlr.v4.runtime.*;
 
-import ast.ASTNode;
-import errorhandler.ErrorHandler;
 import parser.*;
-import semantic.IdentificationVisitor;
-import semantic.LValueVisitor;
-import semantic.TypeCheckingVisitor;
+
 
 public class Main {
 
@@ -38,7 +34,7 @@ public class Main {
         } else {
             // * The AST is shown
             ast.accept(new OffsetVisitor(), null);
-            ast.accept(new ExecuteCGVisitor(new CodeGenerator(args[1], args[0])), null);
+            ast.accept(new ExecutionVisitor(new CodeGenerator(args[1], args[0])), null);
 //            IntrospectorModel model = new IntrospectorModel("Program", ast);
 //            new IntrospectorView("Introspector", model);
         }
