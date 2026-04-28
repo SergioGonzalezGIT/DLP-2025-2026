@@ -40,7 +40,7 @@ public class RecordField implements Locatable {
 
     @Override
     public String toString() {
-        return name + ":" + type;
+        return "Field[name:" + name + ",type:" + type + " offset:" + offset + "]";
     }
 
     @Override

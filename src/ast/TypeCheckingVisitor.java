@@ -37,22 +37,17 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
         return null;
     }
 
-    // En TypeCheckingVisitor.java
     @Override
     public Void visit(Cast cast, Type param) {
-        // 1. Inferimos el tipo de la expresión interna
         cast.getExpression().accept(this, null);
 
-        // 2. Comprobamos si el tipo original admite el casteo al tipo destino
         Type originalType = cast.getExpression().getType();
         Type targetType = cast.getCastType();
 
         Type resultType = originalType.canBeCastTo(targetType, cast);
 
-        // 3. Le asignamos al nodo Cast el tipo resultante (que será targetType o ErrorType)
         cast.setType(resultType);
 
-        // 4. Propagación de tipos hacia arriba (si es necesario)
         if (param != null) {
             cast.getType().mustPromoteTo(param, cast);
         }

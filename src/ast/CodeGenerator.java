@@ -13,7 +13,7 @@ public class CodeGenerator {
      * AQUI SE ESCRIBEN PRACTICAMENTE 1 METODO POR CADA INSTRUCCION DE BAJO NIVEL DE DESCRIPTION.TXT
      * LOS METODOS SON MUCHO MAS DE ALTO NIVEL, cuanto mas mejor
      * INSTRUCCIONES PROHIBIDAS EN LOS VISITORS
-     * No hay que pasar ' *, solo poner el comentario, la maquina virtual debera saber que es un comentario y ponerle ya lo de ' *
+     * No hay que pasar ' *, solo poner el comentario, codegenerator debera saber que es un comentario y ponerle ya lo de ' *
      */
     private int labels=0;
     private PrintWriter out;
@@ -140,20 +140,6 @@ public class CodeGenerator {
         out.flush();
     }
 
-    public void jz(int number){
-        out.println("\tjz\tlabel" + number);
-        out.flush();
-    }
-
-    public void jmp(int number){
-        out.println("\tjmp\tlabel" + number);
-        out.flush();
-    }
-
-    public void writeLabel(int number){
-        out.println(" label" + number + ":");
-        out.flush();
-    }
 
     public void jz(String label){
         out.println("\tjz\t" + label);
@@ -168,6 +154,10 @@ public class CodeGenerator {
     public void writeLabel(String label){
         out.println("\n " + label + ":");
         out.flush();
+    }
+
+    public void writeLabelPegado(String label) {
+        out.println(" "+label + ":");
     }
 
     public void line(int line) {
@@ -232,7 +222,6 @@ public class CodeGenerator {
         out.println("\t' * " + text);
         out.flush();
     }
-
 
     public String getLabel() {
         return "label" + (labels++);

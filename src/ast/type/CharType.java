@@ -32,12 +32,14 @@ public class CharType extends  AbstractType{
     }
 
     @Override
-    public void mustPromoteTo(Type other, Locatable locatable) {
-        if (other instanceof CharType || other instanceof ErrorType) {
+    public void mustPromoteTo(Type dest, Locatable loc) {
+        if (dest instanceof CharType || dest instanceof IntType || dest instanceof NumberType) {
             return;
         }
-        new ErrorType("El tipo " + this.toString() + " no es compatible con " + other.toString(), locatable);
+        new ErrorType("El tipo char no se puede promocionar a " + dest, loc);
     }
+
+
 
     @Override
     public Type arithmetic(Type other, Locatable locatable) {

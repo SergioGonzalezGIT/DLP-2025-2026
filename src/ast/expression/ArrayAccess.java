@@ -21,6 +21,8 @@ public class ArrayAccess extends AbstractExpression {
         return left;
     }
 
+
+
     public Expression getIndex() {
         return index;
     }

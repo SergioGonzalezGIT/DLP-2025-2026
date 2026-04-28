@@ -13,6 +13,11 @@ public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
     public ValueVisitor(CodeGenerator cg) {
         super(cg);
         this.addressVisitor = new AddressVisitor(cg);
+        this.addressVisitor.setValueVisitor(this);
+    }
+
+    public void setAddressVisitor(AddressVisitor addressVisitor) {
+        this.addressVisitor=addressVisitor;
     }
 
     @Override
@@ -40,6 +45,22 @@ public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
 
         cg.load(node.getType());
 
+        return null;
+    }
+
+    @Override
+    public Void visit(FieldAccess node, Void param) {
+        node.accept(addressVisitor, null);
+
+        cg.load(node.getType());
+
+        return null;
+    }
+
+    @Override
+    public Void visit(ArrayAccess node, Void param) {
+        node.accept(addressVisitor, null);
+        cg.load(node.getType());
         return null;
     }
 
@@ -133,4 +154,6 @@ public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
 
         return null;
     }
+
+
 }

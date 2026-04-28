@@ -37,17 +37,30 @@ public class RecordType extends  AbstractType {
         return fields;
     }
 
+    public RecordField getField(String name) {
+        for (RecordField f : fields) {
+            if (f.getName().equals(name)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("record(");
+        StringBuilder sb = new StringBuilder("RecordType[fields:[");
         for (int i = 0; i < fields.size(); i++) {
             sb.append(fields.get(i).toString());
-            if (i < fields.size() - 1) sb.append(", ");
+            if (i < fields.size() - 1) {
+                sb.append(", ");
+            }
         }
-        sb.append(")");
+        sb.append("]]");
         return sb.toString();
     }
+
+
 
     @Override
     public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {

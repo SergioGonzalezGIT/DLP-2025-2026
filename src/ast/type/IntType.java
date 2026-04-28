@@ -15,7 +15,7 @@ public class IntType extends  AbstractType{
 
     @Override
     public String toString() {
-        return "int";
+        return "IntType";
     }
 
     @Override
@@ -33,11 +33,11 @@ public class IntType extends  AbstractType{
     }
 
     @Override
-    public void mustPromoteTo(Type other, Locatable locatable) {
-        if (other instanceof IntType || other instanceof ErrorType) {
+    public void mustPromoteTo(Type dest, Locatable loc) {
+        if (dest instanceof IntType || dest instanceof NumberType) {
             return;
         }
-        new ErrorType("El tipo " + this.toString() + " no es compatible con " + other.toString(), locatable);
+        new ErrorType("El tipo int no se puede promocionar a " + dest, loc);
     }
 
     @Override

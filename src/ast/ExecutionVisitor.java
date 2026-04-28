@@ -6,6 +6,7 @@ import ast.definition.VarDefinition;
 import ast.expression.Expression;
 import ast.statement.*;
 import ast.type.FunctionType;
+import ast.type.IntType;
 import ast.type.VoidType;
 
 public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
@@ -19,6 +20,9 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         super(cg);
         this.addressVisitor = new AddressVisitor(cg);
         this.valueVisitor = new ValueVisitor(cg);
+
+        this.addressVisitor.setValueVisitor(this.valueVisitor);
+        this.valueVisitor.setAddressVisitor(this.addressVisitor);
     }
 
     @Override
@@ -59,24 +63,34 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
 
+
+
+    //Hay que hacer convertTo para asegurar, cg.convertTo ( expr.type, IntType), antes del jz(end)
     @Override
     public Void visit(While w, Void param) {
-        String labelCondition = cg.getLabel();
-        String labelEnd = cg.getLabel();
+        cg.line(w.getLine());
+        cg.comment("While");
 
-        cg.writeLabel(labelCondition);
+        cg.line(w.getLine());
+
+        String condition = cg.getLabel();
+        String end = cg.getLabel();
+
+        cg.writeLabelPegado(condition);
 
         w.getCondition().accept(valueVisitor, null);
+        cg.convertTo(w.getCondition().getType(), IntType.getInstance());
+        cg.jz(end);
 
-        cg.jz(labelEnd);
+        cg.comment("While body");
 
         for (Statement s : w.getBody()) {
             s.accept(this, null);
         }
 
-        cg.jmp(labelCondition);
+        cg.jmp(condition);
 
-        cg.writeLabel(labelEnd);
+        cg.writeLabelPegado(end);
 
         return null;
     }
@@ -113,21 +127,44 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         String labelElse = cg.getLabel();
         String labelEnd = cg.getLabel();
 
-        ifElse.getCondition().accept(valueVisitor, null);
+        // 1. Cabecera del IF
+        cg.line(ifElse.getLine());
+        cg.comment("If");
+        cg.line(ifElse.getLine());
 
+        // 2. Condición
+        ifElse.getCondition().accept(valueVisitor, null);
+        cg.convertTo(ifElse.getCondition().getType(), IntType.getInstance());
         cg.jz(labelElse);
 
+        // 3. Comentario y cuerpo del IF
+        cg.comment("if body");
         for (Statement s : ifElse.getIfBody()) {
             s.accept(this, null);
         }
+
+        // Salto al final para no ejecutar el else
         cg.jmp(labelEnd);
 
-        cg.writeLabel(labelElse);
-        for (Statement s : ifElse.getElseBody()) {
-            s.accept(this, null);
+        // --- AQUÍ APLICAMOS EL MÉTODO PEGADO ---
+        // Etiqueta del Else sin salto de línea previo
+        cg.writeLabelPegado(labelElse);
+
+        // 4. Cuerpo del ELSE (si existe)
+        if (ifElse.getElseBody() != null && !ifElse.getElseBody().isEmpty()) {
+
+            // ¡MAGIA AQUÍ! Usamos el nuevo método para que no haga el salto
+            //cg.linePegado(ifElse.getLine());
+
+            cg.comment("else body");
+            for (Statement s : ifElse.getElseBody()) {
+                s.accept(this, null);
+            }
         }
 
-        cg.writeLabel(labelEnd);
+        // --- AQUÍ APLICAMOS EL MÉTODO PEGADO ---
+        // Etiqueta del Final sin salto de línea previo
+        cg.writeLabelPegado(labelEnd);
 
         return null;
     }
