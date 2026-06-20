@@ -1,18 +1,15 @@
 package ast.statement;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.expression.Expression;
 import java.util.List;
 
-public class Log implements Statement {
+public class Log extends AbstractStatement {
 
-    private int line;
-    private int column;
     private List<Expression> expressions;
 
     public Log(int line, int column, List<Expression> expressions) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.expressions = expressions;
     }
 
@@ -20,15 +17,6 @@ public class Log implements Statement {
         return expressions;
     }
 
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
-    }
 
     public void addExpression(Expression exp) {
         this.expressions.add(exp);

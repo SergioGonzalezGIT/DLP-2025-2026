@@ -1,23 +1,11 @@
-package ast.expression;
+package ast.expression.operations;
 
-import ast.Visitor;
+import ast.expression.Expression;
+import visitor.Visitor;
 
 public class Comparison extends AbstractOperation {
-    private boolean lvalue;
-
-
     public Comparison(int line, int column, Expression left, Expression right, String operator) {
         super(line, column, left, right, operator);
-    }
-
-    @Override
-    public boolean getLValue() {
-        return false;
-    }
-
-    @Override
-    public void setLValue(boolean lvalue) {
-        this.lvalue = lvalue;
     }
 
     @Override

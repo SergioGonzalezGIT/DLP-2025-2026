@@ -1,0 +1,63 @@
+Gramática CFG Abstracta (G):
+	(1) Program: program -> definitions*
+	(2) VarDefinition: vardefinition -> type ID
+	(3) FunctionDefinition: functiondefinition -> ID type statement*
+	(4) Assignment: statement -> expression1 expression2
+	(5) IfElse: statement1 -> expression statement2* statement3*
+	(6) Input: statement -> expression
+	(7) Log: statement -> expression
+	(8) Return: statement -> expression
+    (9) While: statement -> expression statement*  
+	(10) Arithmetic: expression1 -> expression2 (+|-|*|/) expression3 
+	(11) Comparison: expression1 -> expression2 (>|>=|<|<=) expression3
+	(12) Logical: expression1 -> expression2 (|| | &&) expression3
+	(13) UnaryMinus: expression1 -> expression2
+	(14) UnaryNot: expression1 -> expression2
+	(15) Cast: expression1 -> expression2 type
+	(16) ArrayAccess: expression1 -> expression2 expression3
+	(17) FieldAccess: expression1 -> expression2 ID
+	(18) FunctionInvocation: expression1 -> expression2 expression3*
+	(19) CharLiteral: expression -> CHAR_CONSTANT
+	(20) IntLiteral: expression -> INT_CONSTANT
+	(21) NumberLiteral: expression -> NUMBER_CONSTANT
+	(22) Variable: expression -> ID
+	(23) ArrayType: type -> type INT_CONSTANT
+	(24) CharType: type -> CHAR
+	(25) IntType: type -> INT
+	(26) ErrorType: type -> ERROR
+	(27) FunctionType: type1 -> type2 vardefinition*
+	(28) NumberType: type -> NUMBER
+	(29) RecordType: type -> field*
+	(30) RecordField: field -> type ID
+	(31) Void: type -> VOID
+	
+Atributos (A):
+{expression.type € Type, statement.returnType € Type}
+
+
+Reglas Semánticas de la gramática atribuida (R):
+    (3) statements*.foreach(st->st.returnType=type.returnType)
+	(4) expression2.type.mustPromoteTo(expression1.type, statement)
+	(5) expression.type.mustBeLogical(statement1)
+	    statements2*.foreach(st->st.returnType=statement1.returnType);
+	    statements3*.foreach(st->st.returnType=statement1.returnType);
+	(6) expression.type.mustBePrimitive(statement)
+	(7) expression.type.mustBePrimitive(statement)
+	(8) expression.type.mustPromote(statement.returnType, statement);
+	    expression.type.mustBePrimitive(statement);
+	(9) expression.type.mustBeLogical(statement)
+	    statements*.foreach(st->st.returnType=statement.returnType);
+	(10) expression1.type = expression2.type.arithmetic(expression3.type, expression1)
+	(11) expression1.type = expression2.type.comparison(expression3.type, expression1)
+	(12) expression1.type = expression2.type.logic(expression3.type, expression1)
+	(13) expression1.type = expression2.type.arithmetic(expression1)
+	(14) expression2.type.mustBeLogical(expression2); expression1.type = IntType
+	(15) expression1.type = expression2.type.canBeCastTo(type, expression1)
+	(16) expression1.type = expression2.type.squareBrackets(expression3.type, expression1)
+	(17) expression1.type = expression2.type.dot(ID, expression1)
+	(18) expression1.type = expression2.type.parenthesis(expression2*.type, expression1)
+	(19) expression.type = CharType
+	(20) expression.type = IntType
+	(21) expression.type = NumberType
+	(22) expression.type = ID.definition.type
+

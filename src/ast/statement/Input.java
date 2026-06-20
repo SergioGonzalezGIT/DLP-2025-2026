@@ -1,34 +1,21 @@
 package ast.statement;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.expression.Expression;
 
 import java.util.List;
 
-public class Input implements Statement {
+public class Input extends AbstractStatement {
 
-    private int line;
-    private int column;
     private List<Expression> expressions;
 
     public Input(int line, int column, List<Expression> expressions) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.expressions = expressions;
     }
 
     public List<Expression> getExpressions() {
         return expressions;
-    }
-
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
     }
 
     public void addExpression(Expression exp) {

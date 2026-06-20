@@ -1,9 +1,9 @@
-package ast;
+package visitor;
 
 import ast.definition.Definition;
 import ast.definition.FunctionDefinition;
 import ast.definition.VarDefinition;
-import ast.expression.Variable;
+import ast.expression.literals.Variable;
 import ast.statement.Statement;
 import ast.type.ErrorType;
 import symboltable.SymbolTable;

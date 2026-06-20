@@ -1,6 +1,11 @@
-package ast;
+package codegen;
 
 import ast.expression.*;
+import ast.expression.literals.CharLiteral;
+import ast.expression.literals.IntLiteral;
+import ast.expression.literals.NumberLiteral;
+import ast.expression.literals.Variable;
+import ast.expression.operations.*;
 import ast.type.*;
 
 public class ValueVisitor extends AbstractCGVisitor<Void, Void>{

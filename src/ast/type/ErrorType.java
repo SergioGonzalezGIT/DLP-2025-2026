@@ -1,7 +1,8 @@
 package ast.type;
 
+import ast.ErrorHandler;
 import ast.Locatable;
-import ast.Visitor;
+import visitor.Visitor;
 
 import java.util.List;
 

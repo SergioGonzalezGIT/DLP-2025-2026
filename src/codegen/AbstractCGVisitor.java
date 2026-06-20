@@ -1,10 +1,18 @@
-package ast;
+package codegen;
 
+import ast.ASTNode;
+import ast.Program;
 import ast.definition.FunctionDefinition;
 import ast.definition.VarDefinition;
 import ast.expression.*;
+import ast.expression.literals.CharLiteral;
+import ast.expression.literals.IntLiteral;
+import ast.expression.literals.NumberLiteral;
+import ast.expression.literals.Variable;
+import ast.expression.operations.*;
 import ast.statement.*;
 import ast.type.*;
+import visitor.Visitor;
 
 public abstract class AbstractCGVisitor<TP, TR> implements Visitor<TP, TR> {
 

@@ -1,4 +1,4 @@
-package ast;
+package codegen;
 
 import ast.type.CharType;
 import ast.type.IntType;

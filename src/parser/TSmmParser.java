@@ -2,17 +2,13 @@
 package parser;
 
 import ast.expression.Expression;
-import ast.expression.IntLiteral;
+import ast.expression.literals.*;
 import ast.*;
-import ast.expression.Variable;
 import ast.expression.*;
 import ast.definition.*;
-import ast.expression.Expression;
-import ast.expression.IntLiteral;
-import ast.*;
-import ast.expression.Variable;
-import ast.expression.*;
-import ast.definition.*;
+import ast.expression.literals.IntLiteral;
+import ast.expression.literals.Variable;
+import ast.expression.operations.*;
 import ast.statement.*;
 import ast.type.*;
 import java.util.List;
@@ -21,11 +17,7 @@ import java.util.ArrayList;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class TSmmParser extends Parser {
@@ -1360,7 +1352,7 @@ public class TSmmParser extends Parser {
 				((ExpressionContext)_localctx).OP = match(T__25);
 				setState(316);
 				((ExpressionContext)_localctx).e1 = expression(10);
-				((ExpressionContext)_localctx).ast =  new UnaryMinus (((ExpressionContext)_localctx).OP.getLine(), ((ExpressionContext)_localctx).OP.getCharPositionInLine()+1, ((ExpressionContext)_localctx).e1.ast);
+				((ExpressionContext)_localctx).ast =  new UnaryMinus(((ExpressionContext)_localctx).OP.getLine(), ((ExpressionContext)_localctx).OP.getCharPositionInLine()+1, ((ExpressionContext)_localctx).e1.ast);
 				}
 				break;
 			case 5:
@@ -1369,7 +1361,7 @@ public class TSmmParser extends Parser {
 				((ExpressionContext)_localctx).OP = match(T__26);
 				setState(320);
 				((ExpressionContext)_localctx).e1 = expression(9);
-				((ExpressionContext)_localctx).ast =  new UnaryNot (((ExpressionContext)_localctx).OP.getLine(), ((ExpressionContext)_localctx).OP.getCharPositionInLine()+1, ((ExpressionContext)_localctx).e1.ast);
+				((ExpressionContext)_localctx).ast =  new UnaryNot(((ExpressionContext)_localctx).OP.getLine(), ((ExpressionContext)_localctx).OP.getCharPositionInLine()+1, ((ExpressionContext)_localctx).e1.ast);
 				}
 				break;
 			case 6:
@@ -1397,7 +1389,7 @@ public class TSmmParser extends Parser {
 				{
 				setState(329);
 				((ExpressionContext)_localctx).CHAR_CONSTANT = match(CHAR_CONSTANT);
-				((ExpressionContext)_localctx).ast =  new CharLiteral (((ExpressionContext)_localctx).CHAR_CONSTANT.getLine(), ((ExpressionContext)_localctx).CHAR_CONSTANT.getCharPositionInLine()+1, LexerHelper.lexemeToChar( ((ExpressionContext)_localctx).CHAR_CONSTANT.getText()));
+				((ExpressionContext)_localctx).ast =  new CharLiteral(((ExpressionContext)_localctx).CHAR_CONSTANT.getLine(), ((ExpressionContext)_localctx).CHAR_CONSTANT.getCharPositionInLine()+1, LexerHelper.lexemeToChar( ((ExpressionContext)_localctx).CHAR_CONSTANT.getText()));
 				}
 				break;
 			}
@@ -1433,7 +1425,7 @@ public class TSmmParser extends Parser {
 						}
 						setState(335);
 						((ExpressionContext)_localctx).e2 = expression(9);
-						((ExpressionContext)_localctx).ast =  new Arithmetic (((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, ((ExpressionContext)_localctx).OP.getText() );
+						((ExpressionContext)_localctx).ast =  new Arithmetic(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, ((ExpressionContext)_localctx).OP.getText() );
 						}
 						break;
 					case 2:
@@ -1479,7 +1471,7 @@ public class TSmmParser extends Parser {
 						}
 						setState(345);
 						((ExpressionContext)_localctx).e2 = expression(7);
-						((ExpressionContext)_localctx).ast =  new Comparison (((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, ((ExpressionContext)_localctx).OP.getText() );
+						((ExpressionContext)_localctx).ast =  new Comparison(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, ((ExpressionContext)_localctx).OP.getText() );
 						}
 						break;
 					case 4:
@@ -1502,7 +1494,7 @@ public class TSmmParser extends Parser {
 						}
 						setState(350);
 						((ExpressionContext)_localctx).e2 = expression(6);
-						((ExpressionContext)_localctx).ast =  new Logical (((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, ((ExpressionContext)_localctx).OP.getText() );
+						((ExpressionContext)_localctx).ast =  new Logical(((ExpressionContext)_localctx).e1.ast.getLine(), ((ExpressionContext)_localctx).e1.ast.getColumn(), ((ExpressionContext)_localctx).e1.ast, ((ExpressionContext)_localctx).e2.ast, ((ExpressionContext)_localctx).OP.getText() );
 						}
 						break;
 					case 5:

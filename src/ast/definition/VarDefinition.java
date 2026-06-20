@@ -1,60 +1,20 @@
 package ast.definition;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.statement.Statement;
 import ast.type.Type;
 
-public class VarDefinition implements Definition, Statement {
-
-    private int line;
-    private int column;
-    private String name;
-    private Type type;
-
-    private int scope;
+public class VarDefinition extends AbstractDefinition implements Statement {
 
     private int offset;
 
     public VarDefinition(int line, int column, String name, Type type) {
-        this.line = line;
-        this.column = column;
-        this.name = name;
-        this.type = type;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public int getScope() {
-        return scope;
-    }
-
-    @Override
-    public void setScope(int scope) {
-        this.scope=scope;
-    }
-
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
+        super(line, column, name, type);
     }
 
     @Override
     public String toString() {
-        return "let " + name + " : " + type + ";";
+        return "let " + getName() + " : " + getType() + ";";
     }
 
     @Override

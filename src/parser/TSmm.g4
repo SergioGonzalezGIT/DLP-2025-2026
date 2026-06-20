@@ -10,15 +10,15 @@ grammar TSmm;
 
 @header{
 import ast.expression.Expression;
-import ast.expression.IntLiteral;
+import ast.expression.literals.IntLiteral;
 import ast.*;
-import ast.expression.Variable;
+import ast.expression.literals.Variable;
 import ast.expression.*;
 import ast.definition.*;
 import ast.expression.Expression;
-import ast.expression.IntLiteral;
+import ast.expression.literals.IntLiteral;
 import ast.*;
-import ast.expression.Variable;
+import ast.expression.literals.Variable;
 import ast.expression.*;
 import ast.definition.*;
 import ast.statement.*;

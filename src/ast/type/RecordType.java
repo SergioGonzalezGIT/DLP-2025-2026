@@ -1,10 +1,9 @@
 package ast.type;
 
 import ast.Locatable;
-import ast.Visitor;
+import visitor.Visitor;
 import ast.definition.VarDefinition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecordType extends  AbstractType {

@@ -1,8 +1,8 @@
-package ast;
+package codegen;
 
 import ast.definition.VarDefinition;
 import ast.expression.ArrayAccess;
-import ast.expression.Variable;
+import ast.expression.literals.Variable;
 import ast.expression.FieldAccess;
 
 import ast.type.IntType;

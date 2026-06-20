@@ -1,20 +1,18 @@
 package ast.expression;
 
-import ast.Visitor;
+import ast.expression.literals.Variable;
+import visitor.Visitor;
 
 import java.util.List;
 
 public class FunctionInvocation extends AbstractExpression {
 
-    private int line;
-    private int column;
     private Variable variable;
     private List<Expression> arguments;
-    private boolean lvalue;
+
 
     public FunctionInvocation(int line, int column, Variable variable, List<Expression> arguments) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.variable = variable;
         this.arguments = arguments;
     }
@@ -31,30 +29,12 @@ public class FunctionInvocation extends AbstractExpression {
         return arguments;
     }
 
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
-    }
 
     @Override
     public String toString() {
         return variable + "(" + arguments + ")";
     }
 
-    @Override
-    public boolean getLValue() {
-        return false;
-    }
-
-    @Override
-    public void setLValue(boolean lvalue) {
-        this.lvalue = lvalue;
-    }
 
     @Override
     public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {

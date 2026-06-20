@@ -1,6 +1,8 @@
 package ast;
 
 import ast.definition.Definition;
+import visitor.Visitor;
+
 import java.util.List;
 
 public class Program implements ASTNode {

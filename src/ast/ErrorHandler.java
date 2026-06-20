@@ -1,6 +1,6 @@
-package ast.type;
+package ast;
 
-import ast.Locatable;
+import ast.type.ErrorType;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

@@ -1,6 +1,11 @@
-package ast;
+package visitor;
 
 import ast.expression.*;
+import ast.expression.literals.CharLiteral;
+import ast.expression.literals.IntLiteral;
+import ast.expression.literals.NumberLiteral;
+import ast.expression.literals.Variable;
+import ast.expression.operations.*;
 import ast.statement.*;
 import ast.type.ErrorType;
 

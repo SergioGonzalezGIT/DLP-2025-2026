@@ -1,18 +1,15 @@
 package ast.statement;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.expression.Expression;
 
-public class Assignment implements Statement {
+public class Assignment extends AbstractStatement {
 
-    private int line;
-    private int column;
     private Expression left;
     private Expression right;
 
     public Assignment(int line, int column, Expression left, Expression right) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.left = left;
         this.right = right;
     }
@@ -23,16 +20,6 @@ public class Assignment implements Statement {
 
     public Expression getRight() {
         return right;
-    }
-
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
     }
 
     @Override

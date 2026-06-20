@@ -1,17 +1,15 @@
-package ast.expression;
+package ast.expression.operations;
 
-import ast.Visitor;
+import ast.expression.AbstractExpression;
+import ast.expression.Expression;
+import visitor.Visitor;
 
 public class UnaryMinus extends AbstractExpression {
 
-    private int line;
-    private int column;
     private Expression expression;
-    private boolean lvalue;
 
     public UnaryMinus(int line, int column, Expression expression) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.expression = expression;
     }
 
@@ -20,29 +18,10 @@ public class UnaryMinus extends AbstractExpression {
     }
 
     @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
-    }
-
-    @Override
     public String toString() {
         return "-" + expression;
     }
 
-    @Override
-    public boolean getLValue() {
-        return false;
-    }
-
-    @Override
-    public void setLValue(boolean lvalue) {
-        this.lvalue = lvalue;
-    }
 
     @Override
     public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP param) {

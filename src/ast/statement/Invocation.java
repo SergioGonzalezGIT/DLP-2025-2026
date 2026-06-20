@@ -1,22 +1,18 @@
 package ast.statement;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.expression.Expression;
-import ast.expression.Variable;
+import ast.expression.literals.Variable;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Invocation implements Statement {
+public class Invocation extends AbstractStatement {
 
-    private int line;
-    private int column;
     private Variable variable;
     private List<Expression> arguments;
 
     public Invocation(int line, int column, Variable variable, List<Expression> arguments) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.variable = variable;
         this.arguments = arguments;
     }
@@ -27,16 +23,6 @@ public class Invocation implements Statement {
 
     public List<Expression> getArguments() {
         return arguments;
-    }
-
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
     }
 
     public void addArgument(Expression arg) {

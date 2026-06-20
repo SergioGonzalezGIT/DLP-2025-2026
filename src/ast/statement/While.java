@@ -1,21 +1,18 @@
 package ast.statement;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.expression.Expression;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class While implements Statement {
+public class While extends AbstractStatement {
 
-    private int line;
-    private int column;
+
     private Expression condition;
     private List<Statement> body;
 
     public While(int line, int column, Expression condition, List<Statement> body) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.condition = condition;
         this.body = body;
     }
@@ -28,15 +25,6 @@ public class While implements Statement {
         return body;
     }
 
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
-    }
 
     @Override
     public String toString() {

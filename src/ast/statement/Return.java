@@ -1,32 +1,19 @@
 package ast.statement;
 
-import ast.Visitor;
+import visitor.Visitor;
 import ast.expression.Expression;
 
-public class Return implements Statement {
+public class Return extends AbstractStatement {
 
-    private int line;
-    private int column;
     private Expression expression;
 
     public Return(int line, int column, Expression expression) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.expression = expression;
     }
 
     public Expression getExpression() {
         return expression;
-    }
-
-    @Override
-    public int getLine() {
-        return line;
-    }
-
-    @Override
-    public int getColumn() {
-        return column;
     }
 
     @Override

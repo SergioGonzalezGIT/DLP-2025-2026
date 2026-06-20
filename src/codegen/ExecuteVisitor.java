@@ -1,5 +1,6 @@
-package ast;
+package codegen;
 
+import ast.Program;
 import ast.definition.Definition;
 import ast.definition.FunctionDefinition;
 import ast.definition.VarDefinition;
@@ -14,14 +15,13 @@ import ast.type.VoidType;
 
 //podria cambiarase a fundDef, Void, y hacerlo segun la plantilla que tengo hecha de clase
 //En el if y en el while hay que propagar el parametro
-public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
+public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> {
 
     private AddressVisitor addressVisitor;
     private ValueVisitor valueVisitor;
 
-    private FunctionDefinition currentFunction;
 
-    public ExecutionVisitor(CodeGenerator cg) {
+    public ExecuteVisitor(CodeGenerator cg) {
         super(cg);
         this.addressVisitor = new AddressVisitor(cg);
         this.valueVisitor = new ValueVisitor(cg);
@@ -31,7 +31,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     @Override
-    public Void visit(Assignment a, Void param) {
+    public Void visit(Assignment a, FunctionDefinition param) {
         cg.line(a.getLine());
         cg.comment("Assignment");
 
@@ -43,7 +43,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     @Override
-    public Void visit(Input input, Void param) {
+    public Void visit(Input input, FunctionDefinition param) {
         for (Expression expr : input.getExpressions()) {
             cg.line(input.getLine());
             cg.comment("Read");
@@ -56,7 +56,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     @Override
-    public Void visit(Log print, Void param) {
+    public Void visit(Log print, FunctionDefinition param) {
         for (Expression expr : print.getExpressions()) {
             cg.line(print.getLine());
             cg.comment("Write");
@@ -72,7 +72,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
 
     //Hay que hacer convertTo para asegurar, cg.convertTo ( expr.type, IntType), antes del jz(end)
     @Override
-    public Void visit(While w, Void param) {
+    public Void visit(While w, FunctionDefinition param) {
         cg.line(w.getLine());
         cg.comment("While");
 
@@ -90,7 +90,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         cg.comment("While body");
 
         for (Statement s : w.getBody()) {
-            s.accept(this, null);
+            s.accept(this, param);
         }
 
         cg.jmp(condition);
@@ -103,11 +103,11 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
 
 
     @Override
-    public Void visit(Return ret, Void param) {
+    public Void visit(Return ret, FunctionDefinition param) {
         cg.line(ret.getLine());
         cg.comment("Return");
 
-        FunctionType type = (FunctionType) this.currentFunction.getType();
+        FunctionType type = (FunctionType) param.getType();
         Type expectedReturn = type.getReturnType();
 
         if (ret.getExpression() != null) {
@@ -121,7 +121,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         }
 
         int localBytes = 0;
-        for (Statement s : this.currentFunction.getStatements()) {
+        for (Statement s : param.getStatements()) {
             if (s instanceof VarDefinition) {
                 localBytes += ((VarDefinition)s).getType().numberOfBytes();
             }
@@ -138,7 +138,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     @Override
-    public Void visit(Program p, Void param) {
+    public Void visit(Program p, FunctionDefinition param) {
 
         for (Definition def : p.getDefinitions()) {
             if (def instanceof VarDefinition) {
@@ -160,12 +160,12 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         return null;
     }
     @Override
-    public Void visit(VarDefinition v, Void param) {
+    public Void visit(VarDefinition v, FunctionDefinition param) {
         return null;
     }
 
     @Override
-    public Void visit(IfElse ifElse, Void param) {
+    public Void visit(IfElse ifElse, FunctionDefinition param) {
         String labelElse = cg.getLabel();
         String labelEnd = cg.getLabel();
 
@@ -179,7 +179,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
 
         cg.comment("if body");
         for (Statement s : ifElse.getIfBody()) {
-            s.accept(this, null);
+            s.accept(this, param);
         }
 
         cg.jmp(labelEnd);
@@ -191,7 +191,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
 
             cg.comment("else body");
             for (Statement s : ifElse.getElseBody()) {
-                s.accept(this, null);
+                s.accept(this, param);
             }
         }
 
@@ -203,7 +203,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
 
 
     @Override
-    public Void visit(FunctionInvocation inv, Void param) {
+    public Void visit(FunctionInvocation inv, FunctionDefinition param) {
         cg.line(inv.getLine());
         inv.accept(valueVisitor, null);
 
@@ -215,7 +215,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     @Override
-    public Void visit(Invocation inv, Void param) {
+    public Void visit(Invocation inv, FunctionDefinition param) {
         cg.line(inv.getLine());
 
         // 1. Traducir argumentos (igual que en ValueVisitor)
@@ -238,8 +238,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
     }
 
     @Override
-    public Void visit(FunctionDefinition def, Void param) {
-        this.currentFunction = def;
+    public Void visit(FunctionDefinition def, FunctionDefinition param) {
 
         cg.line(def.getLine());
         cg.writeLabel(def.getName());
@@ -267,7 +266,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         cg.enter(localBytes);
 
         for (Statement s : def.getStatements()) {
-            s.accept(this, null);
+            s.accept(this, def);
         }
 
         FunctionType type = (FunctionType) def.getType();

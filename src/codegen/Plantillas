@@ -1,0 +1,133 @@
+------------------ PLANTILLAS EXECUTE ---------------------
+execute [[ Assignment: stmt -> expr1 expr2]]() = address [[ expr1 ]]
+                                                 value [[ expr2 ]]
+                                                 cg.converTo(expr2.type, expr1.type)
+                                                 <store> + expr1.getType().suffix()
+
+execute [[ Program: program -> definition*]]() = for(Definition d:definitions*)
+                                                   if(d instanceof VarDefinition)
+                                                        execute[[d]]()
+                                               <call main>
+                                               <halt>
+                                               for(Definition d:definitions*)
+                                                        if( d instanceof FunctionDefinition)
+                                                            execute[[d]]
+
+
+execute [[FunctionDefinition: definition -> ID type stmnt*]]() = ID <:>
+                                                             for(VarDefinition p: type.definition)
+                                                                    execute [[p]]()
+                                                             Comantarios de las locales
+                                                             <enter> def.localBytes
+                                                             for(Statement s: statment*)
+                                                                    execute[[s]](definition.type)
+                                                             if(type.returnType == VoidType.getInstance())
+                                                                <ret> 0,def.localbytes, type.parameters.map(p -> p.type.numberOfBytes).sum()
+
+execute [[Return: stmnt -> expr]] () = value [[expr]] (FunctionDefinition param)
+                                                cg.converTo(expr.type,param.type.returnType);
+                                                <ret> + param.type.returnType.numberOfBytes(), param.localBytes, param.type.parameters.map(p -> p.type.numberOfBytes).sum()
+
+
+execute [[Log: stmt -> expr]] () =  value [[expr]] ()
+                                    <out> + expr.type.suffix
+
+execute [[Input: stmt -> expr]] () =    address [[expr]] ()
+                                        <in> + expr.type.suffix
+                                        <store> + expr.type.suffix
+
+execute [[VarDefinition: definition -> type ID]] () = <'> * <type> <ID> (offset <definition.offset>)
+
+execute [[While: stmt1 -> expr stmt2*]] () = String cond = cg.getLabel()
+                                             String end = cg.getLabel()
+                                             cond <:>
+                                             value [[expr]] ()
+                                             cg.convertTo(expr.type, IntType.getInstance())
+                                             <jz> end
+                                             stmt2*.forEach(s->execute[[s]]());
+                                             <jmp> cond
+                                             end <:>
+
+execute [[IfElse: stmt1 -> expr stmt2* stmt3*]] () = String else = cg.getLabel()
+                                                     String end = cg.getLabel()
+                                                     value [[expr]]
+                                                     cg.converTo(expr.getType,IntType.getInstance())
+                                                     <jz> else
+                                                     stmt2*forEach(s->execute[[s]]())
+                                                     <jmp> end
+                                                     else <:>
+                                                     stmt3.forEach(s->execute[[s]])
+                                                     end <:>
+
+
+execute [[FuncInvocation: stmt -> expr1 expr2*]] () = value [[ (Expresion) stmt]] ()
+                                                      if(expr1.type.returnType != Void.getInstance())
+                                                        <pop> + expr1.definition.type.returnType.suffix()
+
+
+
+------------------------------ PLANTILLAS ADDRESS --------------------------
+address [[Variable: expr -> ID]]() = if (expr.definition.scope()==0)
+                                        <pusha> expr.definition.offset()
+                                     else {
+                                         <pusha bp>
+                                         <push> expr.definition.offset()
+                                         <addi>
+                                     }
+
+address [[FieldAccess: expr1 -> expr2 ID]] () = address [[expr2]] ()
+                                                <pushi> expr2.type.getField(ID).offset
+                                                <addi>
+
+address [[ArrayAccess: expr1 -> expr2 expr3]] () = address [[expr2]]
+                                                   value [[expr3]]
+                                                   cg.converTo(expr3.type,IntType.getInstance())
+                                                   <pushi> expr1.type.numberOfBytes()
+                                                   <muli>
+                                                   <addi>
+
+
+
+
+
+
+---------------------- PLANTILLAS VALUE -----------------------
+value [[Variable: expr -> ID]] = address[[expr]]()
+                                 <load> + expr.type.suffix()
+
+value [[CharLiteral: expr -> CHAR_CONSTANT]] () = <pushb> CHAR_CONSTANT
+value [[IntLiteral: expr -> INT_CONSTANT]] () = <pushi> INT_CONSTANT
+value [[NumberLiteral: expr -> NUMBER_CONSTANT]] ()= <pushf> NUMBER_CONSTANT
+
+value [[Arithmetic: expr1 -> expr2 op expr3 ]] () = value[[expr2]]()
+                                                    value[[expr3]] ()
+                                                    <op> + expr1.type.suffix()
+
+value [[Cast: expr1 -> type expr2]] () = value [[expr2]] ()
+                                         cg.converTo(expr2.type,expr1.type)
+
+value [[Comparison: expr1 -> expr2 op expr3]] () = value [[expr2]] ()
+                                                   value [[expr3]] ()
+                                                   <comparison> + op + expr1.type.suffix()
+
+value [[Logical: expr1 -> expr2 op expr3]] () = value [[expr2]] ()
+                                                value [[expr3]] ()
+                                                <op>
+value [[UnaryNot: expr1 -> expr2]] () = value [[expr2]] ()
+                                        <not>
+
+value [[UnaryMinus: expr1 -> expr2]] () = <push> 0
+                                          value [[expr2]]()
+                                          <sub> + expr1.type.suffix()
+
+value [[FieldAccess: expr1 -> expr2 ID]] () = address [[expr1]]
+                                              <load> + expr1.type.suffix()
+
+value [[FuncInvocation: expr1 -> expr2 expr3*]] () = for(int i=0; i<expr3.size();i++){
+                                                        value [[expr3.get(i)]]()
+                                                        cg.converTo(expr3.get(i).type, expr2.type.parameters.get(i).type)
+                                                        }
+                                                     <call> + expr2.name
+
+value [[ArrayAccess: expr1 -> expr2 expr3]] () = address[[expr1]]
+                                                 <load> + expr1.type.suffix();
