@@ -21,8 +21,9 @@ public class OffsetVisitor extends AbstractVisitor<Boolean, Void> {
     @Override
     public Void visit(FunctionType funcType, Boolean isParam) {
         // 3. DELEGAMOS EN VarDefinition. Ya no calculamos nada aquí.
-        for (VarDefinition p : funcType.getParameters()) {
-            p.accept(this, isParam); // Pasará el 'true' hacia abajo
+        for (int i = funcType.getParameters().size() - 1; i >= 0; i--) {
+            VarDefinition p = funcType.getParameters().get(i);
+            p.accept(this, true); // Le pasamos 'true' porque son parámetros
         }
         funcType.getReturnType().accept(this, false);
 

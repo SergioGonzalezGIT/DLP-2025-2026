@@ -1,10 +1,7 @@
 package ast;
 
 import ast.expression.*;
-import ast.type.CharType;
-import ast.type.IntType;
-import ast.type.NumberType;
-import ast.type.Type;
+import ast.type.*;
 
 public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
 
@@ -125,12 +122,15 @@ public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
 
     @Override
     public Void visit(FunctionInvocation inv, Void param) {
-        for (Expression arg : inv.getArguments()) {
+        FunctionType funcType = (FunctionType) inv.getVariable().getType();
+        for(int i=0; i<inv.getArguments().size(); i++){
+            Expression arg = inv.getArguments().get(i);
             arg.accept(this, null);
+            Type paramType = funcType.getParameters().get(i).getType();
+            cg.convertTo(arg.getType(), paramType);
         }
 
         cg.call(inv.getVariable().getName());
-
         return null;
     }
 

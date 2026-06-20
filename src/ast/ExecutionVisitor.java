@@ -4,11 +4,16 @@ import ast.definition.Definition;
 import ast.definition.FunctionDefinition;
 import ast.definition.VarDefinition;
 import ast.expression.Expression;
+import ast.expression.FunctionInvocation;
 import ast.statement.*;
 import ast.type.FunctionType;
 import ast.type.IntType;
+import ast.type.Type;
 import ast.type.VoidType;
 
+
+//podria cambiarase a fundDef, Void, y hacerlo segun la plantilla que tengo hecha de clase
+//En el if y en el while hay que propagar el parametro
 public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
 
     private AddressVisitor addressVisitor;
@@ -95,6 +100,43 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         return null;
     }
 
+
+
+    @Override
+    public Void visit(Return ret, Void param) {
+        cg.line(ret.getLine());
+        cg.comment("Return");
+
+        FunctionType type = (FunctionType) this.currentFunction.getType();
+        Type expectedReturn = type.getReturnType();
+
+        if (ret.getExpression() != null) {
+            ret.getExpression().accept(valueVisitor, null);
+            cg.convertTo(ret.getExpression().getType(), expectedReturn);
+        }
+
+        int returnBytes = 0;
+        if (!(expectedReturn instanceof VoidType)) {
+            returnBytes = expectedReturn.numberOfBytes();
+        }
+
+        int localBytes = 0;
+        for (Statement s : this.currentFunction.getStatements()) {
+            if (s instanceof VarDefinition) {
+                localBytes += ((VarDefinition)s).getType().numberOfBytes();
+            }
+        }
+
+        int paramBytes = 0;
+        for (VarDefinition p : type.getParameters()) {
+            paramBytes += p.getType().numberOfBytes();
+        }
+
+        cg.ret(returnBytes, localBytes, paramBytes);
+
+        return null;
+    }
+
     @Override
     public Void visit(Program p, Void param) {
 
@@ -106,7 +148,7 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         }
 
         cg.mainInvocation();
-        cg.call("main");
+        cg.callMain();
         cg.halt();
 
         for (Definition def : p.getDefinitions()) {
@@ -127,34 +169,25 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         String labelElse = cg.getLabel();
         String labelEnd = cg.getLabel();
 
-        // 1. Cabecera del IF
         cg.line(ifElse.getLine());
         cg.comment("If");
         cg.line(ifElse.getLine());
 
-        // 2. Condición
         ifElse.getCondition().accept(valueVisitor, null);
         cg.convertTo(ifElse.getCondition().getType(), IntType.getInstance());
         cg.jz(labelElse);
 
-        // 3. Comentario y cuerpo del IF
         cg.comment("if body");
         for (Statement s : ifElse.getIfBody()) {
             s.accept(this, null);
         }
 
-        // Salto al final para no ejecutar el else
         cg.jmp(labelEnd);
 
-        // --- AQUÍ APLICAMOS EL MÉTODO PEGADO ---
-        // Etiqueta del Else sin salto de línea previo
         cg.writeLabelPegado(labelElse);
 
-        // 4. Cuerpo del ELSE (si existe)
         if (ifElse.getElseBody() != null && !ifElse.getElseBody().isEmpty()) {
 
-            // ¡MAGIA AQUÍ! Usamos el nuevo método para que no haga el salto
-            //cg.linePegado(ifElse.getLine());
 
             cg.comment("else body");
             for (Statement s : ifElse.getElseBody()) {
@@ -162,9 +195,44 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
             }
         }
 
-        // --- AQUÍ APLICAMOS EL MÉTODO PEGADO ---
-        // Etiqueta del Final sin salto de línea previo
         cg.writeLabelPegado(labelEnd);
+
+        return null;
+    }
+
+
+
+    @Override
+    public Void visit(FunctionInvocation inv, Void param) {
+        cg.line(inv.getLine());
+        inv.accept(valueVisitor, null);
+
+        if (!(inv.getType() instanceof VoidType)) {
+            cg.pop(inv.getType());
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void visit(Invocation inv, Void param) {
+        cg.line(inv.getLine());
+
+        // 1. Traducir argumentos (igual que en ValueVisitor)
+        FunctionType funcType = (FunctionType) inv.getVariable().getType();
+        for (int i = 0; i < inv.getArguments().size(); i++) {
+            Expression arg = inv.getArguments().get(i);
+            arg.accept(valueVisitor, null);
+            Type paramType = funcType.getParameters().get(i).getType();
+            cg.convertTo(arg.getType(), paramType);
+        }
+
+        // 2. Llamar a la función
+        cg.call(inv.getVariable().getName());
+
+        if (!(funcType.getReturnType() instanceof VoidType)) {
+            cg.pop(funcType.getReturnType());
+        }
 
         return null;
     }
@@ -177,6 +245,14 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         cg.writeLabel(def.getName());
 
         cg.comment("Parameters");
+
+        // Extraemos los parámetros desde el objeto FunctionType almacenado en la definición
+        if (def.getType() instanceof FunctionType) {
+            FunctionType fType = (FunctionType) def.getType();
+            for (VarDefinition p : fType.getParameters()) {
+                cg.comment( p.getType().toString() + " " + p.getName() + " (offset " + p.getOffset() + ")");
+            }
+        }
 
         cg.comment("Local variables");
         int localBytes = 0;
@@ -209,35 +285,4 @@ public class ExecutionVisitor extends AbstractCGVisitor<Void, Void> {
         return null;
     }
 
-    @Override
-    public Void visit(Return ret, Void param) {
-        if (ret.getExpression() != null) {
-            ret.getExpression().accept(valueVisitor, null);
-        }
-
-        FunctionType type = (FunctionType) this.currentFunction.getType();
-
-        int returnBytes = 0;
-        if (!(type.getReturnType() instanceof VoidType)) {
-            returnBytes = type.getReturnType().numberOfBytes();
-        }
-
-        int localBytes = 0;
-        for (Statement s : this.currentFunction.getStatements()) {
-            if (s instanceof VarDefinition) {
-                localBytes += ((VarDefinition)s).getType().numberOfBytes();
-            }
-        }
-
-        // Sumar bytes de parámetros
-        int paramBytes = 0;
-        for (VarDefinition p : type.getParameters()) {
-            paramBytes += p.getType().numberOfBytes();
-        }
-
-        // 3. Limpiamos la pila y salimos
-        cg.ret(returnBytes, localBytes, paramBytes);
-
-        return null;
-    }
 }

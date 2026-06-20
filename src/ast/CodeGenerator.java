@@ -131,7 +131,12 @@ public class CodeGenerator {
     }
 
     public void call(String function){
-        out.println("call " + function);
+        out.println("\tcall\t" + function);
+        out.flush();
+    }
+
+    public void callMain() {
+        out.println("call main");
         out.flush();
     }
 
@@ -172,7 +177,7 @@ public class CodeGenerator {
     }
 
     public void ret(int returnBytes, int localBytes, int paramBytes) {
-        out.println("\tret\t" + returnBytes + ", " + localBytes + ", " + paramBytes);
+        out.println("\tret\t" + returnBytes +", " + localBytes +", " + paramBytes);
         out.flush();
     }
 
@@ -225,6 +230,11 @@ public class CodeGenerator {
 
     public String getLabel() {
         return "label" + (labels++);
+    }
+
+    public void pop(Type type) {
+        out.println("\tpop" + type.suffix());
+        out.flush();
     }
 
     /* COPIADO DE CLASE

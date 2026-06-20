@@ -57,16 +57,24 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
 
     @Override
     public Void visit(Arithmetic arithmetic, Type param) {
-        arithmetic.getLeft().accept(this, null);
-        arithmetic.getRight().accept(this, null);
+        // 1. Visitamos los hijos PASÁNDOLES el param recibido
+        arithmetic.getLeft().accept(this, param);
+        arithmetic.getRight().accept(this, param);
 
         Type izq = arithmetic.getLeft().getType();
         Type der = arithmetic.getRight().getType();
 
-        Type resultado = izq.arithmetic(der, arithmetic);
-        arithmetic.setType(resultado);
+        // 2. Calculamos el tipo natural
+        Type natural = izq.arithmetic(der, arithmetic);
 
-        if (param != null) arithmetic.getType().mustPromoteTo(param, arithmetic);
+        // 3. Asignamos el tipo basándonos en el parámetro externo
+        if (param != null) {
+            arithmetic.setType(param);
+            natural.mustPromoteTo(param, arithmetic);
+        } else {
+            arithmetic.setType(natural);
+        }
+
         return null;
     }
 
@@ -175,14 +183,15 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
     @Override
     public Void visit(Assignment assignment, Type param) {
         assignment.getLeft().accept(this, null);
-        assignment.getRight().accept(this, null);
+        Type tipoIzq = assignment.getLeft().getType();
+
+        assignment.getRight().accept(this, tipoIzq);   // <-- cambio aquí
+
+        Type tipoDer = assignment.getRight().getType();
 
         if (!assignment.getLeft().getLValue()) {
             new ErrorType("Se requiere un L-Value a la izquierda de la asignación.", assignment.getLeft());
         }
-
-        Type tipoIzq = assignment.getLeft().getType();
-        Type tipoDer = assignment.getRight().getType();
 
         tipoDer.mustPromoteTo(tipoIzq, assignment);
 
