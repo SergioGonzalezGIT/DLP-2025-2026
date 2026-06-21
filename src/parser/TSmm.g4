@@ -9,22 +9,15 @@ grammar TSmm;
 //text
 
 @header{
-import ast.expression.Expression;
-import ast.expression.literals.IntLiteral;
 import ast.*;
-import ast.expression.literals.Variable;
-import ast.expression.*;
-import ast.definition.*;
-import ast.expression.Expression;
-import ast.expression.literals.IntLiteral;
-import ast.*;
-import ast.expression.literals.Variable;
-import ast.expression.*;
-import ast.definition.*;
-import ast.statement.*;
-import ast.type.*;
-import java.util.List;
-import java.util.ArrayList;
+    import ast.statement.*;
+    import ast.expression.*;
+    import ast.expression.operations.*;
+    import ast.expression.literals.*;
+    import ast.definition.*;
+    import ast.type.*;
+    import java.util.List;
+    import java.util.ArrayList;
 }
 
 
