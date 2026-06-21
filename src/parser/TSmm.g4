@@ -149,6 +149,10 @@ statement returns [Statement ast = null]:
             | OP='while' '(' e1=expression ')' b1=block
                           { $ast = new While($OP.getLine(), $OP.getCharPositionInLine() + 1, $e1.ast, $b1.ast); }
 
+            // do { i = i + 1; } while (i < 10);
+            | OP='do' b1=block 'while' '(' e1=expression ')' ';'
+                          { $ast = new DoWhile($OP.getLine(), $OP.getCharPositionInLine() + 1, $b1.ast, $e1.ast); }
+
             //if (a > b) log a; else log b;
             | OP='if' '(' e1=expression ')' b1=block ('else' b2=block { $ast = new IfElse($OP.getLine(), $OP.getCharPositionInLine() + 1, $e1.ast, $b1.ast, $b2.ast); } )?
                           { if ($ast == null) $ast = new IfElse($OP.getLine(), $OP.getCharPositionInLine() + 1, $e1.ast, $b1.ast, new ArrayList<>()); }

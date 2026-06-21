@@ -48,6 +48,22 @@ execute [[While: stmt1 -> expr stmt2*]] () = String cond = cg.getLabel()
                                              <jmp> cond
                                              end <:>
 
+
+execute [[DoWhile: stmt1 -> stmt2* expr]] () = String start = cg.getLabel()
+                                               String end = cg.getLabel()
+
+                                               start <:>
+
+                                               stmt2*.forEach(s->execute[[s]]());
+
+                                               value [[expr]] ()
+                                               cg.convertTo(expr.type, IntType.getInstance())
+
+                                               <jz> end
+                                               <jmp> start
+
+                                               end <:>
+
 execute [[IfElse: stmt1 -> expr stmt2* stmt3*]] () = String else = cg.getLabel()
                                                      String end = cg.getLabel()
                                                      value [[expr]]

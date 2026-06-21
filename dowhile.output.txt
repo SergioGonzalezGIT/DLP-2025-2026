@@ -1,0 +1,60 @@
+
+#source	"dowhile.input.txt"
+
+
+' Invocation to the main function
+call main
+halt
+
+
+#line	1
+
+ main:
+	' * Parameters
+	' * Local variables
+	' * IntType i (offset -2)
+	enter	2
+
+#line	3
+	' * Assignment
+	push	bp
+	pushi	-2
+	addi
+	pushi	0
+	storei
+
+#line	5
+	' * Do-While
+ label0:
+	' * Do-While body
+
+#line	6
+	' * Assignment
+	push	bp
+	pushi	-2
+	addi
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	pushi	1
+	addi
+	storei
+
+#line	7
+	' * Write
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	outi
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	pushi	3
+	lti
+	jz	label1
+	jmp	label0
+ label1:
+	ret	0, 2, 0

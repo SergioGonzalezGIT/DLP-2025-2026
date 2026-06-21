@@ -302,4 +302,22 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
         invocation.getVariable().getType().parenthesis(argTypes, invocation);
         return null;
     }
+
+
+
+    @Override
+    public Void visit(DoWhile dw, Type param) {
+        // 1. Visitamos la condición con NULL para no arrastrar el 'void' de la función main
+        dw.getCondition().accept(this, null);
+
+        // 2. Comprobamos que es lógica (booleano o int)
+        dw.getCondition().getType().mustBeLogical(dw.getCondition());
+
+        // 3. Visitamos el cuerpo pasándole el param (por si hay un return dentro)
+        for (Statement s : dw.getBody()) {
+            s.accept(this, param);
+        }
+
+        return null;
+    }
 }

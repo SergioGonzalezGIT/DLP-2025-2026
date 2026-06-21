@@ -284,4 +284,37 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
         return null;
     }
 
+
+
+    @Override
+    public Void visit(DoWhile dw, FunctionDefinition param) {
+        cg.line(dw.getLine());
+        cg.comment("Do-While");
+
+        String start = cg.getLabel();
+        String end = cg.getLabel();
+
+        // 1. Etiqueta inicial
+        cg.writeLabelPegado(start);
+        cg.comment("Do-While body");
+
+        // 2. Ejecutar cuerpo primero
+        for (Statement s : dw.getBody()) {
+            s.accept(this, param);
+        }
+
+        // 3. Evaluar condición
+        dw.getCondition().accept(valueVisitor, null);
+        cg.convertTo(dw.getCondition().getType(), IntType.getInstance());
+
+        // 4. Saltos lógicos
+        cg.jz(end);
+        cg.jmp(start);
+
+        // 5. Etiqueta final
+        cg.writeLabelPegado(end);
+
+        return null;
+    }
+
 }
