@@ -168,6 +168,10 @@ statement returns [Statement ast = null]:
                           ex1=expression { ((Input)$ast).addExpression($ex1.ast); }
                           ( ',' ex2=expression { ((Input)$ast).addExpression($ex2.ast); } )* ';'
 
+            // for (i = 0; i < 10; i = i + 1;) { ... }
+            | OP='for' '(' init=statement cond=expression ';' update=statement ')' b1=block
+              { $ast = new For($OP.getLine(), $OP.getCharPositionInLine() + 1, $init.ast, $cond.ast, $update.ast, $b1.ast); }
+
             //imprimirMenu(); o calcularDatos(x, y);
             | ID '('
                           { $ast = new Invocation($ID.getLine(), $ID.getCharPositionInLine() + 1, new Variable($ID.getLine(), $ID.getCharPositionInLine() + 1, $ID.getText()), new ArrayList<>()); }

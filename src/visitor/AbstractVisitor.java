@@ -183,4 +183,16 @@ public abstract class AbstractVisitor<TP, TR> implements Visitor<TP, TR> {
     @Override public TR visit(IntType intType, TP param) { return null; }
     @Override public TR visit(NumberType numberType, TP param) { return null; }
     @Override public TR visit(VoidType voidType, TP param) { return null; }
+
+
+    @Override
+    public TR visit(For f, TP param) {
+        f.getInit().accept(this, param);
+        f.getCondition().accept(this, param);
+        f.getUpdate().accept(this, param);
+        for (Statement s : f.getBody()) {
+            s.accept(this, param);
+        }
+        return null;
+    }
 }

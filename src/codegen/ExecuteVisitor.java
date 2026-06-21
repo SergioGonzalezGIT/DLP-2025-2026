@@ -284,4 +284,45 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
         return null;
     }
 
+
+    @Override
+    public Void visit(For f, FunctionDefinition param) {
+        cg.line(f.getLine());
+        cg.comment("For loop");
+
+        String start = cg.getLabel();
+        String end = cg.getLabel();
+
+        // 1. Ejecutar la inicialización (ej: i = 0;)
+        f.getInit().accept(this, param);
+
+        // 2. Etiqueta de inicio de las iteraciones
+        cg.writeLabelPegado(start);
+
+        // 3. Evaluar la condición (ej: i < 10)
+        f.getCondition().accept(valueVisitor, null);
+        cg.convertTo(f.getCondition().getType(), ast.type.IntType.getInstance());
+
+        // 4. Si es falso, saltar al final
+        cg.jz(end);
+
+        // 5. Ejecutar el cuerpo del bucle
+        cg.comment("For body");
+        for (Statement s : f.getBody()) {
+            s.accept(this, param);
+        }
+
+        // 6. Ejecutar la actualización (ej: i = i + 1;)
+        cg.comment("For update");
+        f.getUpdate().accept(this, param);
+
+        // 7. Volver al inicio para volver a evaluar la condición
+        cg.jmp(start);
+
+        // 8. Etiqueta de fin
+        cg.writeLabelPegado(end);
+
+        return null;
+    }
+
 }

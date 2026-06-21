@@ -302,4 +302,23 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
         invocation.getVariable().getType().parenthesis(argTypes, invocation);
         return null;
     }
+
+
+    @Override
+    public Void visit(For f, Type param) {
+        // 1. Visitamos a los hijos para propagar los chequeos
+        f.getInit().accept(this, param);
+        f.getCondition().accept(this, null); // null para no arrastrar un 'void'
+        f.getUpdate().accept(this, param);
+
+        // 2. Comprobamos que la condición es lógica
+        f.getCondition().getType().mustBeLogical(f.getCondition());
+
+        // 3. Visitamos el cuerpo
+        for (Statement s : f.getBody()) {
+            s.accept(this, param);
+        }
+
+        return null;
+    }
 }

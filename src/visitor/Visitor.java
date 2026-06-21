@@ -52,6 +52,6 @@ public interface Visitor<TP, TR> {
 
     TR visit(Program program, TP param);
 
-
+    TR visit(For forStmt, TP param);
 
 }
