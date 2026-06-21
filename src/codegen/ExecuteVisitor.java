@@ -6,11 +6,9 @@ import ast.definition.FunctionDefinition;
 import ast.definition.VarDefinition;
 import ast.expression.Expression;
 import ast.expression.FunctionInvocation;
+import ast.expression.literals.Variable;
 import ast.statement.*;
-import ast.type.FunctionType;
-import ast.type.IntType;
-import ast.type.Type;
-import ast.type.VoidType;
+import ast.type.*;
 
 
 //podria cambiarase a fundDef, Void, y hacerlo segun la plantilla que tengo hecha de clase
@@ -161,6 +159,49 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
     }
     @Override
     public Void visit(VarDefinition v, FunctionDefinition param) {
+
+        // 1. Inicialización de tipos primitivos (lo que ya teníamos)
+        if (v.getType() instanceof IntType || v.getType() instanceof CharType || v.getType() instanceof NumberType) {
+            cg.comment("Inicializacion primitiva: " + v.getName());
+
+            Variable fakeVar = new Variable(v.getLine(), v.getColumn(), v.getName());
+            fakeVar.setDefinition(v);
+            fakeVar.accept(addressVisitor, null);
+
+            if (v.getType() instanceof NumberType) cg.push(0.0);
+            else if (v.getType() instanceof CharType) cg.push((char) 0);
+            else cg.push(0);
+
+            cg.store(v.getType());
+        }
+        // 2. Inicialización de Structs (RecordType)
+        else if (v.getType() instanceof ast.type.RecordType) {
+            cg.comment("Inicializacion de struct: " + v.getName());
+
+            ast.type.RecordType record = (ast.type.RecordType) v.getType();
+
+            // Recorremos cada campo del struct
+            for (ast.type.RecordField field : record.getFields()) { // Ajusta a tus getters de RecordType
+
+                // Calculamos la dirección base de la variable struct
+                Variable fakeVar = new Variable(v.getLine(), v.getColumn(), v.getName());
+                fakeVar.setDefinition(v);
+                fakeVar.accept(addressVisitor, null);
+
+                // Le sumamos el offset del campo para apuntar al compartimento exacto
+                cg.push(field.getOffset());
+                cg.add(ast.type.IntType.getInstance());
+
+                // Metemos el 0 que toque según el tipo del campo
+                if (field.getType() instanceof NumberType) cg.push(0.0);
+                else if (field.getType() instanceof CharType) cg.push((char) 0);
+                else cg.push(0);
+
+                // Guardamos el 0 en el campo
+                cg.store(field.getType());
+            }
+        }
+
         return null;
     }
 

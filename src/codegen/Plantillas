@@ -36,7 +36,40 @@ execute [[Input: stmt -> expr]] () =    address [[expr]] ()
                                         <in> + expr.type.suffix
                                         <store> + expr.type.suffix
 
-execute [[VarDefinition: definition -> type ID]] () = <'> * <type> <ID> (offset <definition.offset>)
+execute [[VarDefinition: definition -> type ID]] () =
+    if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
+        address [[ Variable (ID) ]] ()
+
+        if (type instanceof NumberType)
+            <pushf> 0.0
+        else if (type instanceof CharType)
+            <pushb> 0
+        else
+            <pushi> 0
+
+        <store> + type.suffix()
+    }
+    else if (type instanceof RecordType) {
+        for (RecordField field : type.fields) {
+            // 1. Dirección base del struct
+            address [[ Variable (ID) ]] ()
+
+            // 2. Sumamos el offset del campo para llegar a su celda
+            <pushi> field.offset
+            <addi>
+
+            // 3. Apilamos el cero según el tipo del campo
+            if (field.type instanceof NumberType)
+                <pushf> 0.0
+            else if (field.type instanceof CharType)
+                <pushb> 0
+            else
+                <pushi> 0
+
+            // 4. Guardamos en memoria
+            <store> + field.type.suffix()
+        }
+    }
 
 execute [[While: stmt1 -> expr stmt2*]] () = String cond = cg.getLabel()
                                              String end = cg.getLabel()
