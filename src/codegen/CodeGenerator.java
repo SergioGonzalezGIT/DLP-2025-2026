@@ -8,6 +8,11 @@ import ast.type.Type;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+
+//EN la libreta lo que pone de IP SP y BP se refiere a esto de la teoria
+//IP, Instruction Pointer -> dirección de la instrucción en ejecución (segmento de código)
+//SP, Stack Pointer -> dirección del tope de la pila (segmento de datos)
+//BP, Base Pointer -> dirección del marco de pila activo (segmento de datos)
 public class CodeGenerator {
     /**
      * AQUI SE ESCRIBEN PRACTICAMENTE 1 METODO POR CADA INSTRUCCION DE BAJO NIVEL DE DESCRIPTION.TXT

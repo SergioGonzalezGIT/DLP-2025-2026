@@ -13,6 +13,7 @@ import visitor.AbstractVisitor;
 //HIjos de FunctionDefinitiron seran locales
 //A través de un parametro del visitor, paso esta informacino con un boolean
 //porque hay 2 opciones
+// IP, Instruction Pointer -> dirección de la instrucción en ejecución (segmento de código)
 public class OffsetVisitor extends AbstractVisitor<Boolean, Void> {
     private int globalNumberBytes = 0;
     private int localOffset=0;
