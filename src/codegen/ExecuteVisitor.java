@@ -6,11 +6,9 @@ import ast.definition.FunctionDefinition;
 import ast.definition.VarDefinition;
 import ast.expression.Expression;
 import ast.expression.FunctionInvocation;
+import ast.expression.literals.Variable;
 import ast.statement.*;
-import ast.type.FunctionType;
-import ast.type.IntType;
-import ast.type.Type;
-import ast.type.VoidType;
+import ast.type.*;
 
 
 //podria cambiarase a fundDef, Void, y hacerlo segun la plantilla que tengo hecha de clase
@@ -159,8 +157,33 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
 
         return null;
     }
+
     @Override
     public Void visit(VarDefinition v, FunctionDefinition param) {
+
+        // Solo inicializamos si es un tipo primitivo básico (int, char o number)
+        if (v.getType() instanceof IntType || v.getType() instanceof CharType || v.getType() instanceof NumberType) {
+
+            cg.comment("Inicializacion de variable local: " + v.getName());
+
+            // 1. Calculamos su dirección usando un nodo Variable falso
+            Variable fakeVar = new Variable(v.getLine(), v.getColumn(), v.getName());
+            fakeVar.setDefinition(v);
+            fakeVar.accept(addressVisitor, null);
+
+            // 2. Metemos el valor por defecto llamando a tus métodos sobrecargados
+            if (v.getType() instanceof NumberType) {
+                cg.push(0.0);       // Llama a push(double) para pushf
+            } else if (v.getType() instanceof CharType) {
+                cg.push((char) 0);  // Llama a push(char) para pushb
+            } else {
+                cg.push(0);         // Llama a push(int) para pushi
+            }
+
+            // 3. Guardamos el 0 en la dirección de memoria
+            cg.store(v.getType());
+        }
+
         return null;
     }
 

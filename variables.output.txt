@@ -1,0 +1,46 @@
+
+#source	"variables.input.txt"
+
+
+' Invocation to the main function
+call main
+halt
+
+
+#line	1
+
+ main:
+	' * Parameters
+	' * Local variables
+	' * IntType a (offset -2)
+	' * RealType b (offset -6)
+	enter	6
+	' * Inicializacion de variable local: a
+	push	bp
+	pushi	-2
+	addi
+	pushi	0
+	storei
+	' * Inicializacion de variable local: b
+	push	bp
+	pushi	-6
+	addi
+	pushf	0.0
+	storef
+
+#line	6
+	' * Write
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	outi
+
+#line	7
+	' * Write
+	push	bp
+	pushi	-6
+	addi
+	loadf
+	outf
+	ret	0, 6, 0

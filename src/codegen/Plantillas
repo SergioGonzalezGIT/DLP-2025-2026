@@ -36,7 +36,19 @@ execute [[Input: stmt -> expr]] () =    address [[expr]] ()
                                         <in> + expr.type.suffix
                                         <store> + expr.type.suffix
 
-execute [[VarDefinition: definition -> type ID]] () = <'> * <type> <ID> (offset <definition.offset>)
+execute [[VarDefinition: definition -> type ID]] () =
+    if (type instanceof IntType || type instanceof CharType || type instanceof NumberType) {
+        address [[ Variable (ID) ]] ()
+
+        if (type instanceof NumberType)
+            <pushf> 0.0
+        else if (type instanceof CharType)
+            <pushb> 0
+        else
+            <pushi> 0
+
+        <store> + type.suffix()
+    }
 
 execute [[While: stmt1 -> expr stmt2*]] () = String cond = cg.getLabel()
                                              String end = cg.getLabel()

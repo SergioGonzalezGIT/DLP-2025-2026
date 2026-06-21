@@ -1,0 +1,8 @@
+function main() {
+    let a: int;
+    let b: number;
+
+    // Imprimimos directamente sin haber hecho a = 0;
+    log a; // Debería imprimir exactamente 0
+    log b; // Debería imprimir exactamente 0.0
+}
