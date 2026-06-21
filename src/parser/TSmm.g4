@@ -174,6 +174,20 @@ statement returns [Statement ast = null]:
                           ( ex1=expression { ((Invocation)$ast).addArgument($ex1.ast); }
                             ( ',' ex2=expression { ((Invocation)$ast).addArgument($ex2.ast); } )* )?
                           ')' ';'
+
+            // switch (x) { case 1: log x; case 2: log x; default: log x; }
+                        | OP='switch' '(' e=expression ')' '{'
+                            { List<Case> cases = new ArrayList<>(); List<Statement> defStmts = new ArrayList<>(); }
+                            ( c=caseRule { cases.add($c.ast); } )*
+                            ( 'default' ':' ( s=statement { defStmts.add($s.ast); } )* )?
+                          '}'
+                          { $ast = new Switch($OP.getLine(), $OP.getCharPositionInLine() + 1, $e.ast, cases, defStmts); }
+;
+
+caseRule returns [Case ast = null]
+@init { List<Statement> stmts = new ArrayList<>(); } :
+    OP='case' e=expression ':' ( s=statement { stmts.add($s.ast); } )*
+    { $ast = new Case($OP.getLine(), $OP.getCharPositionInLine() + 1, $e.ast, stmts); }
 ;
 
 block returns [List<Statement> ast = new ArrayList<Statement>()] :

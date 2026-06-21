@@ -284,4 +284,48 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
         return null;
     }
 
+    @Override
+    public Void visit(Switch s, FunctionDefinition param) {
+        cg.line(s.getLine());
+        cg.comment("Switch");
+        String endLabel = cg.getLabel();
+
+        for (Case c : s.getCases()) {
+            String nextCaseLabel = cg.getLabel();
+
+            cg.comment("Case condition");
+            s.getCondition().accept(valueVisitor, null);
+            c.getCondition().accept(valueVisitor, null);
+
+            // Compara que sean iguales (requiere tener cg.eq(...) implementado)
+            cg.eq(s.getCondition().getType());
+
+            // Si son distintos (0), salta a comprobar el siguiente case
+            cg.jz(nextCaseLabel);
+
+            cg.comment("Case body");
+            for (Statement stmt : c.getBody()) {
+                stmt.accept(this, param);
+            }
+            // Al terminar el cuerpo, evitamos el fall-through saltando al final del switch
+            cg.jmp(endLabel);
+
+            // Colocamos la etiqueta para el siguiente caso
+            cg.writeLabelPegado(nextCaseLabel);
+        }
+
+        cg.comment("Default body");
+        for (Statement stmt : s.getDefaultBody()) {
+            stmt.accept(this, param);
+        }
+
+        cg.writeLabelPegado(endLabel);
+        return null;
+    }
+
+    @Override
+    public Void visit(Case c, FunctionDefinition param) {
+        return null; // Lo procesamos directamente desde el Switch
+    }
+
 }

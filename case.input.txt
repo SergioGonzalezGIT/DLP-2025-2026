@@ -1,0 +1,13 @@
+function main() {
+    let i: int;
+    i = 2;
+
+    switch (i) {
+        case 1:
+            log 10;
+        case 2:
+            log 20;
+        default:
+            log 30;
+    }
+}

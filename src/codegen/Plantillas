@@ -65,6 +65,36 @@ execute [[FuncInvocation: stmt -> expr1 expr2*]] () = value [[ (Expresion) stmt]
                                                         <pop> + expr1.definition.type.returnType.suffix()
 
 
+execute [[Switch: stmt1 -> expr case* stmt_default*]] () =
+    String endLabel = cg.getLabel()
+
+    case*.forEach(c -> {
+        String nextCaseLabel = cg.getLabel()
+
+        // 1. Evaluamos la variable del switch y la del caso
+        value [[expr]] ()
+        value [[c.expr]] ()
+
+        // 2. Comparamos si son iguales
+        <eq> + expr.type.suffix()
+
+        // 3. Si no son iguales (0), saltamos al siguiente caso
+        <jz> nextCaseLabel
+
+        // 4. Si son iguales, ejecutamos el cuerpo del caso y escapamos al final
+        c.stmt*.forEach(s -> execute[[s]]())
+        <jmp> endLabel
+
+        // Etiqueta del siguiente caso
+        nextCaseLabel <:>
+    })
+
+    // 5. Bloque default (se ejecuta si ningún caso coincidió)
+    stmt_default*.forEach(s -> execute[[s]]())
+
+    endLabel <:>
+
+
 
 ------------------------------ PLANTILLAS ADDRESS --------------------------
 address [[Variable: expr -> ID]]() = if (expr.definition.scope()==0)

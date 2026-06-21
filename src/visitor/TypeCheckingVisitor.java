@@ -302,4 +302,27 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
         invocation.getVariable().getType().parenthesis(argTypes, invocation);
         return null;
     }
+
+    @Override
+    public Void visit(Switch s, Type param) {
+        s.getCondition().accept(this, null);
+        for (Case c : s.getCases()) {
+            c.accept(this, param);
+            // El tipo del case tiene que ser compatible con el tipo del switch
+            c.getCondition().getType().mustPromoteTo(s.getCondition().getType(), c);
+        }
+        for (Statement stmt : s.getDefaultBody()) {
+            stmt.accept(this, param);
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(Case c, Type param) {
+        c.getCondition().accept(this, null);
+        for (Statement stmt : c.getBody()) {
+            stmt.accept(this, param);
+        }
+        return null;
+    }
 }

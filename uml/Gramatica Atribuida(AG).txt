@@ -30,6 +30,9 @@ Gramática CFG Abstracta (G):
 	(29) RecordType: type -> field*
 	(30) RecordField: field -> type ID
 	(31) Void: type -> VOID
+
+	(32) Switch: statement1 -> expression case* statement2*
+    (33) Case: case -> expression statement*
 	
 Atributos (A):
 {expression.type € Type, statement.returnType € Type}
@@ -60,4 +63,9 @@ Reglas Semánticas de la gramática atribuida (R):
 	(20) expression.type = IntType
 	(21) expression.type = NumberType
 	(22) expression.type = ID.definition.type
+
+
+	(32) case*.foreach(c -> c.expression.type.mustPromoteTo(expression.type, statement1))
+    	     case*.foreach(c -> c.statements*.foreach(st -> st.returnType = statement1.returnType))
+    	     statement2*.foreach(st -> st.returnType = statement1.returnType)
 

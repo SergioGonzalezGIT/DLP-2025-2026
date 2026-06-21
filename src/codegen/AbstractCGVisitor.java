@@ -100,4 +100,10 @@ public abstract class AbstractCGVisitor<TP, TR> implements Visitor<TP, TR> {
     public TR visit(RecordType node, TP param) { return error(node); }
     @Override
     public TR visit(RecordField node, TP param) { return error(node); }
+
+
+    @Override
+    public TR visit(Switch s, TP param) { return error(s); }
+    @Override
+    public TR visit(Case c, TP param) { return error(c); }
 }

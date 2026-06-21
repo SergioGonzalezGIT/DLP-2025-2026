@@ -52,6 +52,7 @@ public interface Visitor<TP, TR> {
 
     TR visit(Program program, TP param);
 
-
+    TR visit(Switch switchStmt, TP param);
+    TR visit(Case caseStmt, TP param);
 
 }

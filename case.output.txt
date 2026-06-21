@@ -1,0 +1,67 @@
+
+#source	"case.input.txt"
+
+
+' Invocation to the main function
+call main
+halt
+
+
+#line	1
+
+ main:
+	' * Parameters
+	' * Local variables
+	' * IntType i (offset -2)
+	enter	2
+
+#line	3
+	' * Assignment
+	push	bp
+	pushi	-2
+	addi
+	pushi	2
+	storei
+
+#line	5
+	' * Switch
+	' * Case condition
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	pushi	1
+	eqi
+	jz	label1
+	' * Case body
+
+#line	7
+	' * Write
+	pushi	10
+	outi
+	jmp	label0
+ label1:
+	' * Case condition
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	pushi	2
+	eqi
+	jz	label2
+	' * Case body
+
+#line	9
+	' * Write
+	pushi	20
+	outi
+	jmp	label0
+ label2:
+	' * Default body
+
+#line	11
+	' * Write
+	pushi	30
+	outi
+ label0:
+	ret	0, 2, 0
