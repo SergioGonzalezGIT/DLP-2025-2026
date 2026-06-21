@@ -302,4 +302,26 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
         invocation.getVariable().getType().parenthesis(argTypes, invocation);
         return null;
     }
+
+    @Override
+    public Void visit(Ternary t, Type param) {
+        // 1. Visitamos a los hijos
+        t.getCondition().accept(this, param);
+        t.getTrueExpr().accept(this, param);
+        t.getFalseExpr().accept(this, param);
+
+        // 2. Comprobamos que la condición es evaluable
+        t.getCondition().getType().mustBeLogical(t.getCondition());
+
+        // 3. Comprobamos que las dos ramas devuelven lo mismo (o promocionan)
+        Type tipoTrue = t.getTrueExpr().getType();
+        Type tipoFalse = t.getFalseExpr().getType();
+
+        tipoFalse.mustPromoteTo(tipoTrue, t);
+
+        // 4. El tipo resultante de la expresión es el tipo de sus ramas
+        t.setType(tipoTrue);
+
+        return null;
+    }
 }

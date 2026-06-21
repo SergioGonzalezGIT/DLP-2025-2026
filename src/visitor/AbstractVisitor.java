@@ -183,4 +183,13 @@ public abstract class AbstractVisitor<TP, TR> implements Visitor<TP, TR> {
     @Override public TR visit(IntType intType, TP param) { return null; }
     @Override public TR visit(NumberType numberType, TP param) { return null; }
     @Override public TR visit(VoidType voidType, TP param) { return null; }
+
+
+    @Override
+    public TR visit(Ternary t, TP param) {
+        t.getCondition().accept(this, param);
+        t.getTrueExpr().accept(this, param);
+        t.getFalseExpr().accept(this, param);
+        return null;
+    }
 }

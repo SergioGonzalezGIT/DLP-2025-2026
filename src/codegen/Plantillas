@@ -131,3 +131,25 @@ value [[FuncInvocation: expr1 -> expr2 expr3*]] () = for(int i=0; i<expr3.size()
 
 value [[ArrayAccess: expr1 -> expr2 expr3]] () = address[[expr1]]
                                                  <load> + expr1.type.suffix();
+
+
+
+
+
+
+value [[Ternary: expr1 -> expr2 expr3 expr4]] () =
+    String labelFalse = cg.getLabel()
+    String labelEnd = cg.getLabel()
+
+    value [[expr2]]()
+    cg.convertTo(expr2.type, IntType.getInstance())
+
+    <jz> labelFalse
+
+    value [[expr3]]()
+    <jmp> labelEnd
+
+    labelFalse <:>
+    value [[expr4]]()
+
+    labelEnd <:>

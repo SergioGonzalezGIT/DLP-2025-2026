@@ -30,6 +30,8 @@ Gramática CFG Abstracta (G):
 	(29) RecordType: type -> field*
 	(30) RecordField: field -> type ID
 	(31) Void: type -> VOID
+
+	(32) Ternary: expression1 -> expression2 expression3 expression4
 	
 Atributos (A):
 {expression.type € Type, statement.returnType € Type}
@@ -60,4 +62,8 @@ Reglas Semánticas de la gramática atribuida (R):
 	(20) expression.type = IntType
 	(21) expression.type = NumberType
 	(22) expression.type = ID.definition.type
+
+	(32) expression2.type.mustBeLogical(expression2)
+    	     expression4.type.mustPromoteTo(expression3.type, expression1)
+    	     expression1.type = expression3.type
 

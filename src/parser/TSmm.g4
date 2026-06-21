@@ -223,6 +223,10 @@ expression returns [Expression ast = null]:
             | e1=expression OP=('&&' | '||') e2=expression {$ast = new Logical ($e1.ast.getLine(), $e1.ast.getColumn(), $e1.ast, $e2.ast, $OP.getText() );}
 
 
+            // Ejemplo: (a > b) ? a : b
+                        | cond=expression '?' trueExpr=expression ':' falseExpr=expression
+                          { $ast = new Ternary($cond.ast.getLine(), $cond.ast.getColumn(), $cond.ast, $trueExpr.ast, $falseExpr.ast); }
+
             | INT_CONSTANT {$ast= new IntLiteral ($INT_CONSTANT.getLine(), $INT_CONSTANT.getCharPositionInLine()+1, LexerHelper.lexemeToInt( $INT_CONSTANT.getText()));}
             | ID {$ast= new Variable ($ID.getLine(), $ID.getCharPositionInLine()+1, $ID.getText());}
             | REAL_CONSTANT  {$ast= new NumberLiteral ($REAL_CONSTANT.getLine(), $REAL_CONSTANT.getCharPositionInLine()+1, LexerHelper.lexemeToReal( $REAL_CONSTANT.getText()));}

@@ -160,5 +160,31 @@ public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
         return null;
     }
 
+    @Override
+    public Void visit(Ternary t, Void param) {
+        String labelFalse = cg.getLabel();
+        String labelEnd = cg.getLabel();
+
+        // 1. Evaluamos la condición
+        t.getCondition().accept(this, param);
+        cg.convertTo(t.getCondition().getType(), ast.type.IntType.getInstance());
+
+        // 2. Si es falsa, saltamos a evaluar la parte false
+        cg.jz(labelFalse);
+
+        // 3. Parte TRUE: la evaluamos y saltamos al final para no ejecutar la FALSE
+        t.getTrueExpr().accept(this, param);
+        cg.jmp(labelEnd);
+
+        // 4. Parte FALSE
+        cg.writeLabelPegado(labelFalse);
+        t.getFalseExpr().accept(this, param);
+
+        // 5. Fin
+        cg.writeLabelPegado(labelEnd);
+
+        return null;
+    }
+
 
 }

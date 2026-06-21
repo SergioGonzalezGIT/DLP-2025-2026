@@ -1,0 +1,11 @@
+function main() {
+    let a, b, mayor: int;
+
+    a = 10;
+    b = 20;
+
+    // Calculamos el mayor usando el operador ternario
+    mayor = (a > b) ? a : b;
+
+    log mayor; // Debería imprimir 20
+}

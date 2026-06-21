@@ -1,0 +1,71 @@
+
+#source	"ternario.input.txt"
+
+
+' Invocation to the main function
+call main
+halt
+
+
+#line	1
+
+ main:
+	' * Parameters
+	' * Local variables
+	' * IntType a (offset -2)
+	' * IntType b (offset -4)
+	' * IntType mayor (offset -6)
+	enter	6
+
+#line	4
+	' * Assignment
+	push	bp
+	pushi	-2
+	addi
+	pushi	10
+	storei
+
+#line	5
+	' * Assignment
+	push	bp
+	pushi	-4
+	addi
+	pushi	20
+	storei
+
+#line	8
+	' * Assignment
+	push	bp
+	pushi	-6
+	addi
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	push	bp
+	pushi	-4
+	addi
+	loadi
+	gti
+	jz	label0
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	jmp	label1
+ label0:
+	push	bp
+	pushi	-4
+	addi
+	loadi
+ label1:
+	storei
+
+#line	10
+	' * Write
+	push	bp
+	pushi	-6
+	addi
+	loadi
+	outi
+	ret	0, 6, 0
