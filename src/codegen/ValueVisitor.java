@@ -8,6 +8,8 @@ import ast.expression.literals.Variable;
 import ast.expression.operations.*;
 import ast.type.*;
 
+
+//• ValueCGVisitor solo se define para expresiones
 public class ValueVisitor extends AbstractCGVisitor<Void, Void>{
 
     private AddressVisitor addressVisitor;

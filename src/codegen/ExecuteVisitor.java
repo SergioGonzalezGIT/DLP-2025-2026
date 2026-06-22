@@ -15,6 +15,8 @@ import ast.type.VoidType;
 
 //podria cambiarase a fundDef, Void, y hacerlo segun la plantilla que tengo hecha de clase
 //En el if y en el while hay que propagar el parametro
+//ExecuteCGVisitor no se puede definir para expresiones
+//(sentencias, definiciones y programa
 public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> {
 
     private AddressVisitor addressVisitor;

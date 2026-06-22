@@ -9,6 +9,9 @@ import ast.type.IntType;
 import ast.type.RecordField;
 import ast.type.RecordType;
 
+
+//• AddressCGVisitor solo se define para ciertas expresiones
+//(l-values)
 public class AddressVisitor extends AbstractCGVisitor<Void, Void> {
 
 
