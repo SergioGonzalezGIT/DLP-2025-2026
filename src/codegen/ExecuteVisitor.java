@@ -220,7 +220,6 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
     public Void visit(Invocation inv, FunctionDefinition param) {
         cg.line(inv.getLine());
 
-        // 1. Traducir argumentos (igual que en ValueVisitor)
         FunctionType funcType = (FunctionType) inv.getVariable().getType();
         for (int i = 0; i < inv.getArguments().size(); i++) {
             Expression arg = inv.getArguments().get(i);
@@ -229,7 +228,6 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
             cg.convertTo(arg.getType(), paramType);
         }
 
-        // 2. Llamar a la función
         cg.call(inv.getVariable().getName());
 
         if (!(funcType.getReturnType() instanceof VoidType)) {
@@ -247,7 +245,6 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
 
         cg.comment("Parameters");
 
-        // Extraemos los parámetros desde el objeto FunctionType almacenado en la definición
         if (def.getType() instanceof FunctionType) {
             FunctionType fType = (FunctionType) def.getType();
             for (VarDefinition p : fType.getParameters()) {

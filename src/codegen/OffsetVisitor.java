@@ -21,10 +21,9 @@ public class OffsetVisitor extends AbstractVisitor<Boolean, Void> {
 
     @Override
     public Void visit(FunctionType funcType, Boolean isParam) {
-        // 3. DELEGAMOS EN VarDefinition. Ya no calculamos nada aquí.
         for (int i = funcType.getParameters().size() - 1; i >= 0; i--) {
             VarDefinition p = funcType.getParameters().get(i);
-            p.accept(this, true); // Le pasamos 'true' porque son parámetros
+            p.accept(this, true);
         }
         funcType.getReturnType().accept(this, false);
 
@@ -33,10 +32,8 @@ public class OffsetVisitor extends AbstractVisitor<Boolean, Void> {
 
     @Override
     public Void visit(VarDefinition varDef, Boolean isParam) {
-        // Visitamos el tipo por si es un RecordType
         varDef.getType().accept(this, isParam);
 
-        // 4. EL IF DE TRES VÍAS (Aquí se centraliza todo)
         if (varDef.getScope() == 0) {
             // Globales
             varDef.setOffset(globalNumberBytes);
@@ -68,14 +65,11 @@ public class OffsetVisitor extends AbstractVisitor<Boolean, Void> {
 
     @Override
     public Void visit(FunctionDefinition funcDef, Boolean isParam) {
-        // 2. SE RESETEAN EN FUNCDEFINITION (Palabras textuales de Oscar)
         localOffset = 0;
-        paramOffset = 4; // Dependiendo de tu máquina, suele ser 4 por el BP y dir. de retorno
+        paramOffset = 4;
 
-        // Visitamos el tipo de la función (donde están los parámetros). Le pasamos true.
         funcDef.getType().accept(this, true);
 
-        // Visitamos las sentencias (donde están las locales). Les pasamos false.
         for (ast.statement.Statement s : funcDef.getStatements()) {
             s.accept(this, false);
         }
