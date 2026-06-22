@@ -65,6 +65,13 @@ execute [[FuncInvocation: stmt -> expr1 expr2*]] () = value [[ (Expresion) stmt]
                                                         <pop> + expr1.definition.type.returnType.suffix()
 
 
+execute [[Increment: stmt -> expr]] () = address [[expr]]
+                                         value [[expr]]
+                                         <pushi> 1
+                                         <addi>
+                                         <store> + expr.type.suffix()
+
+
 
 ------------------------------ PLANTILLAS ADDRESS --------------------------
 address [[Variable: expr -> ID]]() = if (expr.definition.scope()==0)

@@ -30,6 +30,9 @@ Gramática CFG Abstracta (G):
 	(29) RecordType: type -> field*
 	(30) RecordField: field -> type ID
 	(31) Void: type -> VOID
+
+
+	Increment: statement -> expression
 	
 Atributos (A):
 {expression.type € Type, statement.returnType € Type}
@@ -60,4 +63,7 @@ Reglas Semánticas de la gramática atribuida (R):
 	(20) expression.type = IntType
 	(21) expression.type = NumberType
 	(22) expression.type = ID.definition.type
+
+
+	expression.type.mustPromoteTo(IntType, statement)
 
