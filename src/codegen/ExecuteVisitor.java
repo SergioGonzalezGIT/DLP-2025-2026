@@ -286,4 +286,30 @@ public class ExecuteVisitor extends AbstractCGVisitor<FunctionDefinition, Void> 
         return null;
     }
 
+
+
+
+    @Override
+    public Void visit(Incremento inc, FunctionDefinition param) {
+        cg.line(inc.getLine());
+        cg.comment("Incremento");
+
+        // 1. Apilamos la DIRECCIÓN donde vamos a guardar el resultado final
+        inc.getExpression().accept(addressVisitor, null);
+
+        // 2. Apilamos el VALOR ACTUAL de la variable
+        inc.getExpression().accept(valueVisitor, null);
+
+        // 3. Apilamos un 1
+        cg.push(1);
+
+        // 4. Sumamos (saca el 1 y el valor actual, los suma, y mete el resultado)
+        cg.add(ast.type.IntType.getInstance());
+
+        // 5. Guardamos (saca el resultado de la suma y la dirección inicial, y machaca la memoria)
+        cg.store(inc.getExpression().getType());
+
+        return null;
+    }
+
 }

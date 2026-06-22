@@ -302,4 +302,22 @@ public class TypeCheckingVisitor extends AbstractVisitor<Type, Void> {
         invocation.getVariable().getType().parenthesis(argTypes, invocation);
         return null;
     }
+
+    @Override
+    public Void visit(ast.statement.Incremento inc, Type param) {
+        // AQUÍ ESTABA EL ERROR: Hay que pasar null, no param.
+        // Queremos que calcule su tipo sin forzarlo a que sea void.
+        inc.getExpression().accept(this, null);
+
+        if (!inc.getExpression().getLValue()) {
+            new ErrorType("Se requiere un L-Value para el incremento", inc);
+        }
+
+        // Comprobamos que el tipo es numérico
+        if (!(inc.getExpression().getType() instanceof IntType)) {
+            new ErrorType("El operador ++ solo se puede aplicar a enteros", inc);
+        }
+
+        return null;
+    }
 }

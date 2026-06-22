@@ -1,0 +1,50 @@
+
+#source	"incremento.input.txt"
+
+
+' Invocation to the main function
+call main
+halt
+
+
+#line	1
+
+ main:
+	' * Parameters
+	' * Local variables
+	' * IntType i (offset -2)
+	' * IntType b (offset -4)
+	enter	4
+
+#line	5
+	' * Assignment
+	push	bp
+	pushi	-2
+	addi
+	pushi	0
+	storei
+
+#line	6
+	' * Incremento
+	push	bp
+	pushi	-2
+	addi
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	pushi	1
+	addi
+	storei
+
+#line	8
+	' * Assignment
+	push	bp
+	pushi	-4
+	addi
+	push	bp
+	pushi	-2
+	addi
+	loadi
+	storei
+	ret	0, 4, 0

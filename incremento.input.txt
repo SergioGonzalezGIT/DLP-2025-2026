@@ -1,0 +1,9 @@
+function main() {
+    let i: int;
+    let b: int;
+
+    i = 0;
+    i++;       // Esto ahora tiene que compilar perfecto
+
+    b = i;     // b debería acabar valiendo 1
+}

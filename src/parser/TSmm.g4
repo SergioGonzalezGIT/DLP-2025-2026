@@ -162,6 +162,10 @@ statement returns [Statement ast = null]:
                           ex1=expression { ((Log)$ast).addExpression($ex1.ast); }
                           ( ',' ex2=expression { ((Log)$ast).addExpression($ex2.ast); } )* ';'
 
+            // El incremento: i++;
+                | exp=expression '++' ';'
+                  { $ast = new Incremento($exp.start.getLine(), $exp.start.getCharPositionInLine() + 1, $exp.ast); }
+
             //input nombre, edad;
             | OP='input'
                           { $ast = new Input($OP.getLine(), $OP.getCharPositionInLine() + 1, new ArrayList<>()); }
